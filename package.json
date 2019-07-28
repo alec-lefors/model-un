@@ -1,0 +1,13 @@
+{
+  "name": "game",
+  "version": "1.0.0",
+  "description": "A game",
+  "main": "server.js",
+  "author": "Alec LeFors",
+  "license": "ISC",
+  "dependencies": {
+    "socket.io": "*",
+    "express": "*",
+    "laravel-mix": "^4.1.2"
+  }
+}
