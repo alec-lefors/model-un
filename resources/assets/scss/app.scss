@@ -1,0 +1,93 @@
+html {
+	padding: 0;
+	margin: 0;
+}
+
+body {
+	background: url('http://i.imgur.com/cOuYMSG.png') no-repeat center center fixed;
+	background-size: cover;
+	font-family: Helvectia, sans-serif;
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	-khtml-user-select: none; /* Konqueror HTML */
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Non-prefixed version, currently
+	supported by Chrome and Opera */
+}
+
+ul {
+	position: absolute;
+	margin: 0;
+	list-style: none;
+	color: white;
+	width: 25%;
+	min-width: 500px;
+}
+
+.player-list {
+	right: 10%;
+	top: 10%;
+	transform: perspective(200px) rotateY(-2deg);
+	-webkit-transform: perspective(200px) rotateY(-2deg);
+}
+
+.menu {
+	transition: all .2s ease-in-out;
+	
+	left: 10%;
+	bottom: calc(10% + 1em);
+	
+	transform: perspective(200px) rotateY(2deg);
+	-webkit-transform: perspective(200px) rotateY(2deg);
+	z-index: 1;
+}
+
+li {
+	transition: all .2s ease-in-out;
+	padding: .8em;
+	&:not(.head):not(.thumbnail) {
+		background-color: rgba(80, 80, 80, 1);
+		width: 400px;
+		&:hover {
+			background-color: rgba(200, 80, 80, .8);
+			width: 100%;
+		}
+		&:focus {
+			background-color: rgba(200, 80, 80, .8);
+			width: 100%;
+			outline: none;
+		}
+	}
+	&.head {
+		background-color: rgba(20, 20, 20, .9);
+		text-transform: uppercase;
+		font-weight: bold;
+		font-size: 18px;
+		span {
+			float: right;
+		}
+	}
+	&.thumbnail {
+		height: 250px;
+		padding: .1em 1.5em;
+		margin-bottom: 5em;
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-position: center center;
+		background-color: rgba(20, 20, 20, .4)
+	}
+}
+
+.inactive {
+	left: 5%;
+	opacity: 0;
+	z-index: 0;
+}
+
+footer {
+	position: absolute;
+	bottom: 0;
+	right: 1em;
+	color: white;
+}

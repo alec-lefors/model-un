@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>io Chat</title>
+	<script src="/socket.io/socket.io.js"></script>
+	<script async defer src="/js/app.js"></script>
+	<link rel="stylesheet" type="text/css" href="/css/app.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+	<ul class="menu active" data-menu="main">
+		<li class="thumbnail"><h1>Unnamed Game</h1></li>
+		<li class="head">Main menu</li>
+		<li data-link="tutorial">Tutorial</li>
+		<li data-link="multiplayer">Multiplayer</li>
+		<li data-link="settings">Settings</li>
+		<li data-link="" onclick="">Quit</li>
+	</ul>
+
+	<ul class="menu inactive" data-menu="tutorial">
+		<li class="thumbnail" style="background-image: url('');"></li>
+		<li class="head">Tutorial</li>
+		<li data-link="">Start game</li>
+		<li class="back" data-link="main">Go Back</li>
+	</ul>
+
+	<ul class="menu inactive" data-menu="multiplayer">
+		<li class="thumbnail" style="background-image: url('');"></li>
+		<li class="head">Multiplayer</li>
+		<li data-link="start-game">Create game</li>
+		<li data-link="join-game">Join game</li>
+		<li class="back" data-link="main">Go Back</li>
+	</ul>
+
+	<ul class="menu inactive" data-menu="settings">
+		<li class="thumbnail" style="background-image: url('');"></li>
+		<li class="head">Settings</li>
+		<li data-link="" onclick="fullScreen()">Toggle Fullscreen</li>
+		<li class="back" data-link="main">Go Back</li>
+	</ul>
+
+	<ul class="player-list">
+		<li class="head">Players<span>(1/1)</span></li>
+		<li>Player (You)</li>
+	</ul>
+
+	<footer>
+		<p>pre-alpha build 1.0</p>
+	</footer>
+</body>
+</html>
