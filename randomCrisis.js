@@ -1,5 +1,5 @@
 
-const turn = 199;
+const turn = 1;
 
 const users = [
 	{
@@ -121,11 +121,11 @@ const crises = [
 ]
 
 const globalEcon = {
-	money: 800,
-	military: 800,
-	humanitarian: 800,
-	intel: 800,
-	material: 800
+	money: 40,
+	military: 40,
+	humanitarian: 40,
+	intel: 40,
+	material: 40
 }
 
 
@@ -134,7 +134,7 @@ npcOrPlayer(users, globalEcon, turn);
 function npcOrPlayer(users, globalEcon, turn) {
 	let randomNum = Math.random();
 
-	if (true) {
+	if (randomNum <= .65) {
 		npcCrisis(globalEcon, turn);
 	}
 	else {
@@ -159,6 +159,22 @@ function npcCrisis(globalEcon, turn) {
 	const costs = getTotalCost(crisis, globalEcon, turn);
 
 	console.log(costs);
+
+}
+
+function playerCrisis(users, globalEcon, turn) {
+	const numPlayers = users.length;
+
+	const victimPlayer = users[Math.floor(Math.random() * numPlayers)];
+	const crisis = getCrisis();
+
+	console.log(victimPlayer.name + ' and the country of ' + countries[victimPlayer.country] + ' falls victim to ' + crisis.name + '!\nThe nation has exhausted its resources in hopes of resolving the crisis!\nTo help, the council needs to provide:');
+
+	const costs = getTotalCost(crisis, globalEcon, turn);
+
+	console.log(costs);
+
+
 
 }
 
@@ -220,20 +236,3 @@ function getTotalCost(crisis, globalEcon, turn) {
 		material: Math.floor(crisis.weights.material * totalCost)
 	}
 }
-/*
-function crisisSelect() {
-	let selectedVal = Math.floor(Math.random() * (crisisArray.length + 1));
-
-	console.log(`Oh Noes!!!! There is a ${crisisArray[selectedVal]}!!!! in Denmark!!!`);
-
-}
-*/
-
-/*
-crises.forEach((item) => {
-	console.log('-------------------');
-	console.log(item.name);
-	console.log(item.message);
-	console.log(item.weights);
-});
-*/
