@@ -74,7 +74,7 @@ li.head {
   font-size: 18px;
 }
 
-li.head span {
+li.head .right {
   float: right;
 }
 
@@ -88,10 +88,50 @@ li.thumbnail {
   background-color: rgba(20, 20, 20, 0.4);
 }
 
+.hidden {
+  display: none;
+}
+
 .inactive {
   left: 5%;
   opacity: 0;
   z-index: 0;
+}
+
+.inputDialog {
+  z-index: 2;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(20, 20, 20, 0.9);
+}
+
+.inputDialog form {
+  position: absolute;
+  background-color: rgba(200, 80, 80, 0.5);
+  width: 400px;
+  top: 50%;
+  left: 50%;
+  padding: 1em;
+  transform: translate(-50%, -50%);
+}
+
+.inputDialog form label {
+  display: block;
+  color: white;
+  margin-bottom: 5px;
+}
+
+.inputDialog form input[type=text] {
+  width: 85%;
+  height: 30px;
+}
+
+.inputDialog form input[type=submit] {
+  width: 12%;
+  height: 30px;
 }
 
 footer {

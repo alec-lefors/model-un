@@ -16,5 +16,36 @@ app.get('/', (req, res) => {
 
 io.on('connection', (client) => {
 	connections.push(client);
+	updatePlayerCount();
 	console.log('Connected: %s client(s) connected currently.', connections.length);
+
+	client.on('disconnect', () => {
+		connections.splice(connections.indexOf(client), 1);
+		updatePlayerCount();
+		console.log('Disconnected: %s client(s) connected currently.', connections.length);
+	});
+
+	function updatePlayerCount() {
+		io.emit('playerCount', connections.length);
+	}
+
+	client.on('createGame', (data, callback) => {
+		callback('LLOSA5');
+	});
+
+	client.on('joinGame', (data, callback) => {
+		if(data == 'LLOSA5') {
+			callback({
+				success: {
+					msg: `you're in!`
+				} 
+			});
+		} else {
+			callback({
+				error: {
+					msg: `you're out!`
+				} 
+			});
+		}
+	});
 });

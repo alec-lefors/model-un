@@ -1,18 +1,27 @@
-let socket = io.connect();
+// Main Menu JS
+
 // Disable right click
 document.addEventListener('contextmenu', event => event.preventDefault());
 
+const fullscreen = false;
 // Full screen
-function fullScreen() {
-	const docElem = document.documentElement;
-	if (docElem.requestFullscreen) {
-		docElem.requestFullscreen();
-	} else if (docElem.mozRequestFullScreen) { /* Firefox */
-		docElem.mozRequestFullScreen();
-	} else if (docElem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
-		docElem.webkitRequestFullscreen();
-	} else if (docElem.msRequestFullscreen) { /* IE/Edge */
-		docElem.msRequestFullscreen();
+function toggleFullscreen() {
+	if ((document.fullScreenElement && document.fullScreenElement !== null) || (!document.mozFullScreen && !document.webkitIsFullScreen)) {
+		if (document.documentElement.requestFullScreen) {  
+			document.documentElement.requestFullScreen();
+		} else if (document.documentElement.mozRequestFullScreen) {
+			document.documentElement.mozRequestFullScreen();
+		} else if (document.documentElement.webkitRequestFullScreen) {
+			document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+		}
+	} else {
+		if (document.cancelFullScreen) {
+			document.cancelFullScreen();
+		} else if (document.mozCancelFullScreen) {
+			document.mozCancelFullScreen();
+		} else if (document.webkitCancelFullScreen) {
+			document.webkitCancelFullScreen();
+		}
 	}
 }
 
@@ -38,8 +47,8 @@ links.forEach( (link) => {
 });
 
 // Navigate with keyboard
-
 function enterKeyPressed() {
+	if(document.activeElement.tagName != 'input') return;
 	menuLinks[focusedLink].click();
 	if(document.activeElement != document.querySelector('body')) {
 		menuLinks[0].focus();
@@ -106,3 +115,53 @@ document.onkeydown = function(evt) {
 Number.prototype.mod = function(n) {
 	return ((this%n)+n)%n;
 }
+
+// Socket IO Functions
+
+let socket = io.connect();
+
+socket.on('playerCount', (data) => {
+	document.querySelector('[data-socket="playerCount"]').innerHTML = data;
+});
+
+function createGame() {
+	socket.emit('createGame', '', (data) => {
+		document.querySelector('[data-socket="code"]').innerHTML = data;
+	});
+}
+
+function joinGame(code) {
+	socket.emit('joinGame', code, (data) => {
+		if(data.success) {
+			console.log(data.success.msg);
+		} else {
+			console.log(data.error.msg);
+		}
+	});
+}
+
+function enterCode(elem, callback) {
+	elem.innerHTML = `Enter code: ${code}`;
+	const joinGame = elem.parentNode.querySelector('.join-game');
+	joinGame.classList.remove('hidden');
+	joinGame.setAttribute('onclick', `joinGame('${code}')`);
+};
+
+function inputDialog(callback) {
+	const elem = document.querySelector('.inputDialog');
+	elem.classList.remove('hidden');
+	const textInput = elem.querySelector('input[type="text"]');
+	textInput.focus();
+	const form = elem.querySelector('form');
+	let input = '';
+	form.addEventListener('submit', inputListener);
+	function inputListener(e) {
+		e.preventDefault();
+		input = textInput.value;
+		textInput.value = '';
+		elem.classList.add('hidden');
+		form.removeEventListener('onsubmit', inputListener)
+	}
+	callback(input);
+}
+

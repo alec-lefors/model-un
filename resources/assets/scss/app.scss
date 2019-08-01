@@ -64,7 +64,7 @@ li {
 		text-transform: uppercase;
 		font-weight: bold;
 		font-size: 18px;
-		span {
+		.right {
 			float: right;
 		}
 	}
@@ -75,14 +75,50 @@ li {
 		background-repeat: no-repeat;
 		background-size: cover;
 		background-position: center center;
-		background-color: rgba(20, 20, 20, .4)
+		background-color: rgba(20, 20, 20, .4);
 	}
+}
+
+.hidden {
+	display: none;
 }
 
 .inactive {
 	left: 5%;
 	opacity: 0;
 	z-index: 0;
+}
+
+.inputDialog {
+	z-index: 2;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: rgba(20, 20, 20, .9);
+	form {
+		position: absolute;
+		background-color: rgba(200, 80, 80, .5);
+		width: 400px;
+		top: 50%;
+		left: 50%;
+		padding: 1em;
+		transform: translate(-50%, -50%);
+		label {
+			display: block;
+			color: white;
+			margin-bottom: 5px;
+		}
+		input[type=text] {
+			width: 85%;
+			height: 30px;
+		}
+		input[type=submit] {
+			width: 12%;
+			height: 30px;
+		}
+	}
 }
 
 footer {
