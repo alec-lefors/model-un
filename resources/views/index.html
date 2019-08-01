@@ -14,25 +14,25 @@
 			<p>Players online (<span data-socket="playerCount">1</span>)</p>
 		</li>
 		<li class="head">Main menu</li>
-		<li data-link="tutorial">Tutorial</li>
-		<li data-link="multiplayer">Multiplayer</li>
-		<li data-link="settings">Settings</li>
-		<li data-link="" onclick="">Quit</li>
+		<li class="item" data-link="tutorial">Tutorial</li>
+		<li class="item" data-link="multiplayer">Multiplayer</li>
+		<li class="item" data-link="settings">Settings</li>
+		<li class="item" data-link="" onclick="">Quit</li>
 	</ul>
 
 	<ul class="menu inactive" data-menu="tutorial">
 		<li class="thumbnail" style="background-image: url('');"></li>
 		<li class="head">Tutorial</li>
-		<li data-link="">Start game</li>
-		<li class="back" data-link="main">Go Back</li>
+		<li class="item" data-link="">Start game</li>
+		<li class="back item" data-link="main">Go Back</li>
 	</ul>
 
 	<ul class="menu inactive" data-menu="multiplayer">
 		<li class="thumbnail" style="background-image: url('');"></li>
 		<li class="head">Multiplayer</li>
-		<li data-link="start-game" onclick="createGame();">Create game</li>
-		<li data-link="join-game">Join game</li>
-		<li class="back" data-link="main">Go Back</li>
+		<li class="item" data-link="start-game" onclick="createGame();">Create game</li>
+		<li class="item" data-link="join-game">Join game</li>
+		<li class="back item" data-link="main">Go Back</li>
 	</ul>
 
 	<ul class="menu inactive" data-menu="start-game">
@@ -41,23 +41,23 @@
 			<p>Friends can join your game with this code.</p>
 		</li>
 		<li class="head">Create Game</li>
-		<li data-link="">Start game</li>
-		<li class="back" data-link="multiplayer">Go Back</li>
+		<li class="item" data-link="">Start game</li>
+		<li class="back item" data-link="multiplayer">Go Back</li>
 	</ul>
 
 	<ul class="menu inactive" data-menu="join-game">
 		<li class="thumbnail" style="background-image: url('');"></li>
 		<li class="head">Join Game</li>
-		<li data-link="" onclick="inputDialog(enterCode(this, callback));">Enter code: </li>
-		<li data-link="" class="join-game hidden">Join game</li>
-		<li class="back" data-link="multiplayer">Go Back</li>
+		<li class="item" data-link="" onclick="enterCode(this)">Enter code: </li>
+		<li class="item join-game locked" data-link="">Join game</li>
+		<li class="back item" data-link="multiplayer">Go Back</li>
 	</ul>
 
 	<ul class="menu inactive" data-menu="settings">
 		<li class="thumbnail" style="background-image: url('');"></li>
 		<li class="head">Settings</li>
-		<li data-link="" onclick="toggleFullscreen()">Toggle Fullscreen</li>
-		<li class="back" data-link="main">Go Back</li>
+		<li class="item" data-link="" onclick="toggleFullscreen()">Toggle Fullscreen</li>
+		<li class="back item" data-link="main">Go Back</li>
 	</ul>
 
 	<ul class="player-list">

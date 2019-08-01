@@ -48,8 +48,12 @@ links.forEach( (link) => {
 
 // Navigate with keyboard
 function enterKeyPressed() {
-	if(document.activeElement.tagName != 'input') return;
+	const currentElemName = document.activeElement.tagName.toLowerCase();
+	if(currentElemName == 'input' || currentElemName == 'div') return;
 	menuLinks[focusedLink].click();
+	// if(menuLinks[focusedLink].hasAttribute('onclick')) {
+	// 	return;
+	// }
 	if(document.activeElement != document.querySelector('body')) {
 		menuLinks[0].focus();
 	}
@@ -140,28 +144,45 @@ function joinGame(code) {
 	});
 }
 
-function enterCode(elem, callback) {
-	elem.innerHTML = `Enter code: ${code}`;
-	const joinGame = elem.parentNode.querySelector('.join-game');
-	joinGame.classList.remove('hidden');
-	joinGame.setAttribute('onclick', `joinGame('${code}')`);
-};
-
-function inputDialog(callback) {
-	const elem = document.querySelector('.inputDialog');
-	elem.classList.remove('hidden');
-	const textInput = elem.querySelector('input[type="text"]');
-	textInput.focus();
-	const form = elem.querySelector('form');
-	let input = '';
-	form.addEventListener('submit', inputListener);
-	function inputListener(e) {
-		e.preventDefault();
-		input = textInput.value;
-		textInput.value = '';
-		elem.classList.add('hidden');
-		form.removeEventListener('onsubmit', inputListener)
-	}
-	callback(input);
+function inputDialog() {
+	return new Promise( (resolve, reject) => {
+		const dialog = document.querySelector('.inputDialog');
+		dialog.classList.remove('hidden');
+		const textInput = dialog.querySelector('input[type="text"]');
+		textInput.tabIndex = -1;
+		textInput.focus();
+		const form = dialog.querySelector('form');
+		let input = '';
+		form.addEventListener('submit', inputListener);
+		function inputListener(e) {
+			e.preventDefault();
+			input = textInput.value;
+			textInput.value = '';
+			dialog.classList.add('hidden');
+			if(!input) {
+				const reason = new Error('Empty input');
+				reject();
+			} else {
+				resolve(input);
+			}
+			form.removeEventListener('submit', inputListener);
+		}
+	});
 }
 
+function enterCode(elem) {
+	inputDialog().then((code) => submitCode(code))
+	.catch((error) => noCode(error));
+	function submitCode(code) {
+		elem.innerHTML = `Enter code: ${code}`;
+		const joinGame = elem.parentNode.querySelector('.join-game');
+		joinGame.classList.remove('locked');
+		joinGame.setAttribute('onclick', `joinGame('${code}')`);
+	}
+	function noCode(error) {
+		elem.innerHTML = `Enter code:`;
+		const joinGame = elem.parentNode.querySelector('.join-game');
+		joinGame.classList.add('locked');
+		joinGame.setAttribute('onclick', ``);
+	}
+};

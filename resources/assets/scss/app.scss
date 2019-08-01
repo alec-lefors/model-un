@@ -46,8 +46,8 @@ ul {
 li {
 	transition: all .2s ease-in-out;
 	padding: .8em;
-	&:not(.head):not(.thumbnail) {
-		background-color: rgba(80, 80, 80, 1);
+	&.item {
+		background-color: rgba(80, 80, 80, .8);
 		width: 400px;
 		&:hover {
 			background-color: rgba(200, 80, 80, .8);
@@ -56,6 +56,19 @@ li {
 		&:focus {
 			background-color: rgba(200, 80, 80, .8);
 			width: 100%;
+			outline: none;
+		}
+	}
+	&.locked {
+		background-color: rgba(80, 80, 80, .6);
+		color: darkgrey;
+		&:hover {
+			background-color: rgba(150, 150, 150, .6);
+			width: 400px;
+		}
+		&:focus {
+			background-color: rgba(150, 150, 150, .6);
+			width: 400px;
 			outline: none;
 		}
 	}

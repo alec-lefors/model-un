@@ -51,19 +51,35 @@ li {
   padding: 0.8em;
 }
 
-li:not(.head):not(.thumbnail) {
-  background-color: #505050;
+li.item {
+  background-color: rgba(80, 80, 80, 0.8);
   width: 400px;
 }
 
-li:not(.head):not(.thumbnail):hover {
+li.item:hover {
   background-color: rgba(200, 80, 80, 0.8);
   width: 100%;
 }
 
-li:not(.head):not(.thumbnail):focus {
+li.item:focus {
   background-color: rgba(200, 80, 80, 0.8);
   width: 100%;
+  outline: none;
+}
+
+li.locked {
+  background-color: rgba(80, 80, 80, 0.6);
+  color: darkgrey;
+}
+
+li.locked:hover {
+  background-color: rgba(150, 150, 150, 0.6);
+  width: 400px;
+}
+
+li.locked:focus {
+  background-color: rgba(150, 150, 150, 0.6);
+  width: 400px;
   outline: none;
 }
 
