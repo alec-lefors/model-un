@@ -129,9 +129,9 @@ const globalEcon = {
 }
 
 
-npcOrPlayer(users, globalEcon, turn);
+start(users, globalEcon, turn);
 
-function npcOrPlayer(users, globalEcon, turn) {
+function start(users, globalEcon, turn) {
 	let randomNum = Math.random();
 
 	if (randomNum <= .65) {
