@@ -1,0 +1,167 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: Helvectia, sans-serif;
+}
+
+.engine {
+  overflow: hidden;
+}
+
+.main-menu {
+  height: 100vh;
+  width: 100vw;
+  background: url("http://i.imgur.com/cOuYMSG.png") no-repeat center center fixed;
+  background-size: cover;
+  overflow: hidden;
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently
+  supported by Chrome and Opera */
+}
+
+ul {
+  position: absolute;
+  margin: 0;
+  list-style: none;
+  color: white;
+  width: 25%;
+  min-width: 500px;
+}
+
+.player-list {
+  right: 10%;
+  top: 10%;
+  transform: perspective(200px) rotateY(-2deg);
+  -webkit-transform: perspective(200px) rotateY(-2deg);
+}
+
+.menu {
+  transition: all 0.2s ease-in-out;
+  left: 10%;
+  bottom: calc(10% + 1em);
+  transform: perspective(200px) rotateY(2deg);
+  -webkit-transform: perspective(200px) rotateY(2deg);
+  z-index: 1;
+}
+
+li {
+  transition: all 0.2s ease-in-out;
+  padding: 0.8em;
+}
+
+li.item {
+  background-color: rgba(80, 80, 80, 0.8);
+  width: 400px;
+}
+
+li.item:hover {
+  background-color: rgba(200, 80, 80, 0.8);
+  width: 100%;
+}
+
+li.item:focus {
+  background-color: rgba(200, 80, 80, 0.8);
+  width: 100%;
+  outline: none;
+}
+
+li.locked {
+  background-color: rgba(80, 80, 80, 0.6);
+  color: darkgrey;
+}
+
+li.locked:hover {
+  background-color: rgba(150, 150, 150, 0.6);
+  width: 400px;
+}
+
+li.locked:focus {
+  background-color: rgba(150, 150, 150, 0.6);
+  width: 400px;
+  outline: none;
+}
+
+li.head {
+  background-color: rgba(20, 20, 20, 0.9);
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+li.head .right {
+  float: right;
+}
+
+li.thumbnail {
+  height: 250px;
+  padding: 0.1em 1.5em;
+  margin-bottom: 5em;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  background-color: rgba(20, 20, 20, 0.4);
+}
+
+.hidden {
+  display: none;
+}
+
+.inactive {
+  left: 5%;
+  opacity: 0;
+  z-index: 0;
+}
+
+.inputDialog {
+  z-index: 2;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(20, 20, 20, 0.9);
+}
+
+.inputDialog form {
+  position: absolute;
+  background-color: rgba(200, 80, 80, 0.5);
+  width: 400px;
+  top: 50%;
+  left: 50%;
+  padding: 1em;
+  transform: translate(-50%, -50%);
+}
+
+.inputDialog form label {
+  display: block;
+  color: white;
+  margin-bottom: 5px;
+}
+
+.inputDialog form input[type=text] {
+  width: 85%;
+  height: 30px;
+}
+
+.inputDialog form input[type=submit] {
+  width: 12%;
+  height: 30px;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  right: 1em;
+  color: white;
+}
+

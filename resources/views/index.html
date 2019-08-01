@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Unnamed Game</title>
+	<script src="/socket.io/socket.io.js"></script>
+	<link rel="stylesheet" type="text/css" href="/css/app.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+	<section class="home">
+		<h1>Untitled Game</h1>
+		<p>Welcome to Earth 2520</p>
+		<button onclick="openGame();">Start game</button>
+	</section>
+</body>
+<script type="text/javascript">
+	function openGame() {
+		let params = 'width='+screen.width;
+		params += ', height='+screen.height;
+		params += ', top=0, left=0'
+		params += ', fullscreen=yes';
+		params += ', directories=no';
+		params += ', location=no';
+		params += ', menubar=no';
+		params += ', resizable=no';
+		params += ', scrollbars=no';
+		params += ', status=no';
+		params += ', toolbar=no';
+		window.open("/game", "_blank", params);
+	}
+</script>
+</html>
