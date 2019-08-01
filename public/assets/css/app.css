@@ -5,8 +5,7 @@ body {
   font-family: Helvectia, sans-serif;
 }
 
-.main-menu html,
-.main-menu body {
+.engine {
   overflow: hidden;
 }
 

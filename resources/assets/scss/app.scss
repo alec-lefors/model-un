@@ -2,9 +2,10 @@ html, body {
 	padding: 0;
 	margin: 0;
 	font-family: Helvectia, sans-serif;
-	.main-menu & {
-		overflow: hidden;
-	}
+}
+
+.engine {
+	overflow: hidden;
 }
 
 .main-menu {
