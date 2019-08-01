@@ -5,13 +5,17 @@ const io = require('socket.io').listen(server);
 
 let connections = [];
 
-server.listen(process.env.PORT || 8080);
+server.listen(process.env.PORT || 8090);
 console.log('Running server...');
 
 app.use('/css', express.static(__dirname + '/public/assets/css'));
 app.use('/js', express.static(__dirname + '/public/assets/js'));
 app.get('/', (req, res) => {
 	res.sendFile(__dirname + '/resources/views/index.html');
+});
+
+app.get('/game', (req, res) => {
+	res.sendFile(__dirname + '/resources/views/mainmenu.html');
 });
 
 io.on('connection', (client) => {

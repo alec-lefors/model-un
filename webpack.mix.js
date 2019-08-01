@@ -22,7 +22,7 @@ mix.combine('resources/assets/js/app.js', 'public/assets/js/app.js')
 	})
 	.browserSync({
 		// TODO: Make 8000 the actually port number added from port number entered from user
-		proxy: 'localhost:8080',
+		proxy: 'localhost:8090',
 		files: [
 			'index.html',
 			'resources/',

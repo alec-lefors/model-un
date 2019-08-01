@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "browser-sync": "^2.26.7",
-    "browser-sync-webpack-plugin": "^2.0.1",
+    "browser-sync-webpack-plugin": "^2.2.2",
     "resolve-url-loader": "^3.1.0",
     "sass": "^1.22.9",
     "sass-loader": "^7.1.0"

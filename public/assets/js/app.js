@@ -30,19 +30,27 @@ let currentMenu = document.querySelector('.active');
 let focusedLink = 0;
 let menuLinks = currentMenu.querySelectorAll('[data-link]');
 
+function toggleIndexes(on = true) {
+	links.forEach( (link) => {
+		link.tabIndex = on ? 1 : -1;
+		link.blur();
+	});
+}
+
+toggleIndexes(true);
+
 links.forEach( (link) => {
-	link.tabIndex = 1;
 	link.addEventListener("click", () => {
-	const menuName = link.getAttribute('data-link');
-	if(menuName == '') return;
-	const showMenu = document.querySelector(`[data-menu=${menuName}]`);
-	showMenu.classList.remove('inactive');
-	showMenu.classList.add('active');
-	currentMenu = showMenu;
-	menuLinks = currentMenu.querySelectorAll('[data-link]');
-	link.parentNode.classList.add('inactive');
-	link.parentNode.classList.remove('active');
-	focusedLink = 0;
+		const menuName = link.getAttribute('data-link');
+		if(menuName == '') return;
+		const showMenu = document.querySelector(`[data-menu=${menuName}]`);
+		showMenu.classList.remove('inactive');
+		showMenu.classList.add('active');
+		currentMenu = showMenu;
+		menuLinks = currentMenu.querySelectorAll('[data-link]');
+		link.parentNode.classList.add('inactive');
+		link.parentNode.classList.remove('active');
+		focusedLink = 0;
 	});
 });
 
@@ -87,7 +95,8 @@ function rightArrowPressed() {
 	 console.log('right');
 }
 
-document.onkeydown = function(evt) {
+document.addEventListener('keydown', navigateMenus);
+function navigateMenus(evt) {
 	menuLinks = currentMenu.querySelectorAll('[data-link]');
 	evt = evt || window.event;
 	if(document.activeElement == document.querySelector('body')) {
@@ -146,10 +155,12 @@ function joinGame(code) {
 
 function inputDialog() {
 	return new Promise( (resolve, reject) => {
+		document.removeEventListener('keydown', navigateMenus);
+		toggleIndexes(false);
 		const dialog = document.querySelector('.inputDialog');
 		dialog.classList.remove('hidden');
 		const textInput = dialog.querySelector('input[type="text"]');
-		textInput.tabIndex = -1;
+		textInput.tabIndex = 1;
 		textInput.focus();
 		const form = dialog.querySelector('form');
 		let input = '';
@@ -159,13 +170,14 @@ function inputDialog() {
 			input = textInput.value;
 			textInput.value = '';
 			dialog.classList.add('hidden');
+			form.removeEventListener('submit', inputListener);
+			document.addEventListener('keydown', navigateMenus);
 			if(!input) {
 				const reason = new Error('Empty input');
 				reject();
 			} else {
 				resolve(input);
 			}
-			form.removeEventListener('submit', inputListener);
 		}
 	});
 }
