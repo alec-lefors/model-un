@@ -70,6 +70,7 @@ server.listen(process.env.PORT || 8090);
 console.log('Running server...');
 
 app.use('/css', express.static(__dirname + '/public/assets/css'));
+app.use('/audio', express.static(__dirname + '/public/assets/audio'));
 app.use('/js', express.static(__dirname + '/public/assets/js'));
 app.get('/', (req, res) => {
 	res.sendFile(__dirname + '/resources/views/index.html');
@@ -109,7 +110,7 @@ io.on('connection', (client) => {
 			const clients = io.sockets.adapter.rooms[roomCode].sockets;
 			for (let clientId in clients) {
 				let clientSocket = io.sockets.connected[clientId];
-				if(!clientSocket.room.leader) clientSocket.emit('gameDisbanded');
+				if(!clientSocket.room.leader) clientSocket.emit('gameDisbanded', 'Party leader disbanded the party.');
 				clientSocket.leave(roomCode);
 				clientSocket.room = {};
 			}
@@ -186,15 +187,16 @@ io.on('connection', (client) => {
 				ingame.push(roomCode);
 				let amountReady = 0;
 				const clients = room.sockets;
+				const lobbyAmount = room.length;
 				for (let clientId in clients) {
 					let clientSocket = io.sockets.connected[clientId];
 					clientSocket.emit('start game', (isReady) => {
-						if(!isReady) clientSocket.emit('gameDisbanded');
-						amountReady++;
-						readyUp(amountReady, room.length)
-							.then(() => {
-								startGame(roomCode);
-							});
+						console.log(isReady);
+						if(isReady) amountReady++;
+						if(!isReady) io.to(roomCode).emit('gameDisbanded', 'A player quit the game.');
+						readyUp(amountReady, lobbyAmount)
+							.then(() => startGame(roomCode))
+							.catch(() => {});
 					});
 				}
 			}
@@ -203,7 +205,11 @@ io.on('connection', (client) => {
 
 	function readyUp(amountReady, numOfPlayers) {
 		return new Promise( (resolve, reject) => {
-			if(amountReady == numOfPlayers) resolve();
+			if(amountReady == numOfPlayers) {
+				resolve();
+			} else {
+				reject();
+			}
 		});
 	}
 
@@ -212,6 +218,10 @@ io.on('connection', (client) => {
 		const players = room.sockets;
 		console.log(`Started game for room ${gameCode}`);
 		io.to(gameCode).emit('bootGame');
+		for (let clientId in players) {
+			let clientSocket = io.sockets.connected[clientId];
+			clientSocket.emit('chooseCountry');
+		}
 	}
 });
 

@@ -136,6 +136,7 @@ Number.prototype.mod = function(n) {
 // Socket IO Functions
 
 let socket = io.connect();
+let inLobby = false;
 
 socket.on('playerCount', (data) => {
 	document.querySelector('[data-socket="playerCount"]').innerHTML = data;
@@ -156,17 +157,22 @@ function createGame() {
 	socket.emit('createGame', '', (data) => {
 		document.querySelector('[data-socket="code"]').innerHTML = data;
 	});
+	inLobby = true;
 }
 
-socket.on('gameDisbanded', () => {
+socket.on('gameDisbanded', (msg) => {
 	currentMenu.querySelector('.back').click();
 	clearLobby();
+	document.querySelector('.main-menu').classList.remove('hide');
+	document.querySelector('.game').classList.remove('show');
+	notification('Sorry!', msg);
 });
 
 function joinGame(roomCode, link) {
 	socket.emit('joinGame', roomCode, (data) => {
 		if(data.success) {
 			goToWindow('lobby', link);
+			inLobby = true;
 		} else {
 			console.log(data.error.msg);
 		}
@@ -192,6 +198,10 @@ function disband(link) {
 function clearLobby() {
 	document.querySelector('.players').innerHTML = '<li class="item">You</li>';
 	document.querySelector('.partyCount').innerHTML = 1;
+	inLobby = false;
+	document.querySelectorAll('.timer').forEach( (elem) => {
+		elem.innerHTML = `00:00`;
+	});
 }
 
 function inputDialog() {
@@ -247,12 +257,23 @@ function startGame() {
 socket.on('start game', (callback) => {
 	let seconds = 5;
 	const counter = setInterval(timer, 1000);
+	var beep = new Audio('/audio/beep.mp3');
+	var boop = new Audio('/audio/boop.mp3');
 	function timer() {
+		if(!inLobby) {
+			clearInterval(counter);
+			callback(false);
+			return;
+		}
 		seconds = seconds - 1;
+		if(seconds <= 3 && seconds > 0) {
+			beep.play();
+		}
 		if (seconds <= 0) {
 			clearInterval(counter);
 			document.querySelector('.main-menu').classList.add('hide');
 			document.querySelector('.game').classList.add('show');
+			boop.play();
 			callback(true);
 			return;
 		}
@@ -260,4 +281,8 @@ socket.on('start game', (callback) => {
 			elem.innerHTML = `00:0${seconds}`;
 		});
 	}
+});
+
+socket.on('bootGame', () => {
+
 });
