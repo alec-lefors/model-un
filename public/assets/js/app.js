@@ -43,16 +43,20 @@ links.forEach( (link) => {
 	link.addEventListener("click", () => {
 		const menuName = link.getAttribute('data-link');
 		if(menuName == '') return;
-		const showMenu = document.querySelector(`[data-menu=${menuName}]`);
-		showMenu.classList.remove('inactive');
-		showMenu.classList.add('active');
-		currentMenu = showMenu;
-		menuLinks = currentMenu.querySelectorAll('[data-link]');
-		link.parentNode.classList.add('inactive');
-		link.parentNode.classList.remove('active');
-		focusedLink = 0;
+		goToWindow(menuName, link);
 	});
 });
+
+function goToWindow(menuName, link) {
+	const showMenu = document.querySelector(`[data-menu=${menuName}]`);
+	showMenu.classList.remove('inactive');
+	showMenu.classList.add('active');
+	currentMenu = showMenu;
+	menuLinks = currentMenu.querySelectorAll('[data-link]');
+	link.parentNode.classList.add('inactive');
+	link.parentNode.classList.remove('active');
+	focusedLink = 0;
+}
 
 // Navigate with keyboard
 function enterKeyPressed() {
@@ -137,20 +141,57 @@ socket.on('playerCount', (data) => {
 	document.querySelector('[data-socket="playerCount"]').innerHTML = data;
 });
 
+socket.on('currentUsers', (users) => {
+	document.querySelector('.partyCount').innerHTML = users;
+	users = users - 1;
+	const playerBoard = document.querySelector('.players');
+	let html = '<li class="item">You</li>';
+	for(let i = 0; i < users; i++){
+		html += `<li class="item">Player</li>`;
+	}
+	playerBoard.innerHTML = html;
+});
+
 function createGame() {
 	socket.emit('createGame', '', (data) => {
 		document.querySelector('[data-socket="code"]').innerHTML = data;
 	});
 }
 
-function joinGame(code) {
-	socket.emit('joinGame', code, (data) => {
+socket.on('gameDisbanded', () => {
+	currentMenu.querySelector('.back').click();
+	clearLobby();
+});
+
+function joinGame(roomCode, link) {
+	socket.emit('joinGame', roomCode, (data) => {
 		if(data.success) {
-			console.log(data.success.msg);
+			goToWindow('lobby', link);
 		} else {
 			console.log(data.error.msg);
 		}
 	});
+}
+
+function leaveLobby() {
+	socket.emit('leaveLobby' ,'');
+	clearLobby();
+}
+
+function disband(link) {
+	socket.emit('disband', '', (data) => {
+		if(data.success) {
+			goToWindow('multiplayer', link);
+			clearLobby();
+		} else {
+			console.log(data.error.msg);
+		}
+	});
+}
+
+function clearLobby() {
+	document.querySelector('.players').innerHTML = '<li class="item">You</li>';
+	document.querySelector('.partyCount').innerHTML = 1;
 }
 
 function inputDialog() {
@@ -173,7 +214,6 @@ function inputDialog() {
 			form.removeEventListener('submit', inputListener);
 			document.addEventListener('keydown', navigateMenus);
 			if(!input) {
-				const reason = new Error('Empty input');
 				reject();
 			} else {
 				resolve(input);
@@ -183,13 +223,14 @@ function inputDialog() {
 }
 
 function enterCode(elem) {
-	inputDialog().then((code) => submitCode(code))
-	.catch((error) => noCode(error));
+	inputDialog()
+		.then((code) => submitCode(code))
+		.catch((error) => noCode(error));
 	function submitCode(code) {
 		elem.innerHTML = `Enter code: ${code}`;
 		const joinGame = elem.parentNode.querySelector('.join-game');
 		joinGame.classList.remove('locked');
-		joinGame.setAttribute('onclick', `joinGame('${code}')`);
+		joinGame.setAttribute('onclick', `joinGame('${code}', this)`);
 	}
 	function noCode(error) {
 		elem.innerHTML = `Enter code:`;
@@ -198,3 +239,25 @@ function enterCode(elem) {
 		joinGame.setAttribute('onclick', ``);
 	}
 };
+
+function startGame() {
+	socket.emit('start game');
+}
+
+socket.on('start game', (callback) => {
+	let seconds = 5;
+	const counter = setInterval(timer, 1000);
+	function timer() {
+		seconds = seconds - 1;
+		if (seconds <= 0) {
+			clearInterval(counter);
+			document.querySelector('.main-menu').classList.add('hide');
+			document.querySelector('.game').classList.add('show');
+			callback(true);
+			return;
+		}
+		document.querySelectorAll('.timer').forEach( (elem) => {
+			elem.innerHTML = `00:0${seconds}`;
+		});
+	}
+});

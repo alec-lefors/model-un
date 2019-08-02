@@ -1,56 +1,3 @@
-
-const turn = 1;
-
-const users = [
-	{
-		name: 'Alec',
-		country: 2,
-		economy: {
-			money: 10,
-			military: 10,
-			humanitarian: 10,
-			intel: 10,
-			material: 10
-		}
-	},
-	{
-		name: 'Cameron',
-		country: 6,
-		economy: {
-			money: 10,
-			military: 10,
-			humanitarian: 10,
-			intel: 10,
-			material: 10
-		}
-	},
-	{
-		name: 'Logan',
-		country: 7,
-		economy: {
-			money: 10,
-			military: 10,
-			humanitarian: 10,
-			intel: 10,
-			material: 10
-		}
-	},
-	{
-		name: 'Joe',
-		country: 1,
-		economy: {
-			money: 10,
-			military: 10,
-			humanitarian: 10,
-			intel: 10,
-			material: 10
-		}
-	}
-];
-
-const countries = ['United Mines of Eurasia', 'Maple', 'The Collective', 'The Unbeaten Scourge', 'East African Builder\'s Clan','ConnCo Global','Kimjung Islands', 'Alpinia Sanctuary','People\'s Republic of the Great Lakes','The Agency'];
-
-
 const crises = [
 	{
 		name: 'Riot',
@@ -118,27 +65,20 @@ const crises = [
 			material: .30
 		}
 	}
-]
+];
 
-const globalEcon = {
-	money: 40,
-	military: 40,
-	humanitarian: 40,
-	intel: 40,
-	material: 40
-}
+const countries = ['United Mines of Eurasia', 'Maple', 'The Collective', 'The Unbeaten Scourge', 'East African Builder\'s Clan','ConnCo Global','Kimjung Islands', 'Alpinia Sanctuary','People\'s Republic of the Great Lakes','The Agency'];
 
+module.exports = {
+	start: (users, globalEcon, turn) => {
+		let randomNum = Math.random();
 
-start(users, globalEcon, turn);
-
-function start(users, globalEcon, turn) {
-	let randomNum = Math.random();
-
-	if (randomNum <= .65) {
-		npcCrisis(globalEcon, turn);
-	}
-	else {
-		playerCrisis(users, globalEcon, turn);
+		if (randomNum <= .65) {
+			npcCrisis(globalEcon, turn);
+		}
+		else {
+			playerCrisis(users, globalEcon, turn);
+		}
 	}
 }
 

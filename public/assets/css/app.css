@@ -9,29 +9,32 @@ body {
   overflow: hidden;
 }
 
-.main-menu {
+section {
   height: 100vh;
   width: 100vw;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.main-menu {
   background: url("http://i.imgur.com/cOuYMSG.png") no-repeat center center fixed;
   background-size: cover;
-  overflow: hidden;
-  -webkit-touch-callout: none;
-  /* iOS Safari */
+  transition: opacity 0.5s ease-in-out;
   -webkit-user-select: none;
-  /* Safari */
-  /* Konqueror HTML */
   -moz-user-select: none;
-  /* Firefox */
   -ms-user-select: none;
-  /* Internet Explorer/Edge */
   user-select: none;
-  /* Non-prefixed version, currently
-  supported by Chrome and Opera */
+}
+
+.main-menu.hide {
+  opacity: 0;
 }
 
 ul {
   position: absolute;
   margin: 0;
+  padding: 0;
   list-style: none;
   color: white;
   width: 25%;
@@ -163,5 +166,17 @@ footer {
   bottom: 0;
   right: 1em;
   color: white;
+}
+
+.game {
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.5s ease-in-out;
+  background-color: black;
+}
+
+.game.show {
+  opacity: 1;
+  z-index: 10;
 }
 
