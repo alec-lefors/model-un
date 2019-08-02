@@ -184,14 +184,17 @@ io.on('connection', (client) => {
 			if(room && room.length > 1) {
 				rooms.splice(rooms.indexOf(roomCode), 1);
 				ingame.push(roomCode);
-				let ready = 0;
+				let amountReady = 0;
 				const clients = room.sockets;
 				for (let clientId in clients) {
 					let clientSocket = io.sockets.connected[clientId];
 					clientSocket.emit('start game', (isReady) => {
 						if(!isReady) clientSocket.emit('gameDisbanded');
-						readyUp(ready++, room.length)
-							.then(() => startGame(roomCode));
+						amountReady++;
+						readyUp(amountReady, room.length)
+							.then(() => {
+								startGame(roomCode);
+							});
 					});
 				}
 			}
@@ -205,7 +208,10 @@ io.on('connection', (client) => {
 	}
 
 	function startGame(gameCode) {
+		const room = io.sockets.adapter.rooms[gameCode];
+		const players = room.sockets;
 		console.log(`Started game for room ${gameCode}`);
+		io.to(gameCode).emit('bootGame');
 	}
 });
 
