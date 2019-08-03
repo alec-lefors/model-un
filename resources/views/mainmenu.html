@@ -15,8 +15,8 @@
 				<p>Players online (<span data-socket="playerCount">1</span>)</p>
 			</li>
 			<li class="head">Main menu</li>
-			<li class="item" data-link="tutorial">Tutorial</li>
-			<li class="item" data-link="multiplayer">Multiplayer</li>
+			<li class="item online" data-link="tutorial">Tutorial</li>
+			<li class="item online" data-link="multiplayer">Multiplayer</li>
 			<li class="item" data-link="settings">Settings</li>
 			<li class="item" data-link="" onclick="window.close();">Quit</li>
 		</ul>
@@ -24,15 +24,15 @@
 		<ul class="menu inactive" data-menu="tutorial">
 			<li class="thumbnail" style="background-image: url('');"></li>
 			<li class="head">Tutorial</li>
-			<li class="item" data-link="">Start game</li>
+			<li class="item online" data-link="">Start game</li>
 			<li class="back item" data-link="main">Go Back</li>
 		</ul>
 
 		<ul class="menu inactive" data-menu="multiplayer">
 			<li class="thumbnail" style="background-image: url('');"></li>
 			<li class="head">Multiplayer</li>
-			<li class="item" data-link="start-game" onclick="createGame();">Create game</li>
-			<li class="item" data-link="join-game">Join game</li>
+			<li class="item online" data-link="start-game" onclick="createGame();">Create game</li>
+			<li class="item online" data-link="join-game">Join game</li>
 			<li class="back item" data-link="main">Go Back</li>
 		</ul>
 
@@ -41,16 +41,22 @@
 				<h1 class="code">CODE: <span data-socket="code"></span></h1>
 				<p>Friends can join your game with this code.</p>
 			</li>
-			<li class="head">Create Game</li>
-			<li class="item" data-link="">Start game</li>
-			<li class="back item" data-link="multiplayer">Go Back</li>
+			<li class="head">Create Game <span class="timer"></span></li>
+			<li class="item online" data-link="" onclick="startGame();">Start game</li>
+			<li class="back item" data-link="" onclick="disband(this);">Disband</li>
+		</ul>
+
+		<ul class="menu inactive" data-menu="lobby">
+			<li class="thumbnail" style="background-image: url('');"></li>
+			<li class="head">Lobby <span class="timer"></span></li>
+			<li class="item back" data-link="join-game" onclick="leaveLobby();">Leave lobby</li>
 		</ul>
 
 		<ul class="menu inactive" data-menu="join-game">
 			<li class="thumbnail" style="background-image: url('');"></li>
 			<li class="head">Join Game</li>
 			<li class="item" data-link="" onclick="enterCode(this)">Enter code: </li>
-			<li class="item join-game locked" data-link="">Join game</li>
+			<li class="item join-game locked online">Join game</li>
 			<li class="back item" data-link="multiplayer">Go Back</li>
 		</ul>
 
@@ -62,27 +68,41 @@
 		</ul>
 
 		<ul class="player-list">
-			<li class="head">Players<span class="right">(<span data-socket="partyCount">1</span>/10)</span></li>
-			<li class="item">Player (You)</li>
+			<li class="head">Players<span class="right">(<span class="partyCount">1</span>/10)</span></li>
+			<ul class="players">
+				<li class="item">You</li>
+			</ul>
 		</ul>
-
-		<div class="inputDialog hidden">
-			<form>
-				<label>Input text:</label>
-				<input type="text" name="input">
-				<input type="submit" name="submit" value="">
-			</form>
-		</div>
 
 		<footer>
 			<p>pre-alpha build 1.0</p>
 		</footer>
 	</section>
-	<section class="lobby">
-		
-	</section>
+
+	<div class="inputDialog hidden">
+		<form>
+			<label>Input text:</label>
+			<input type="text" name="input">
+			<input type="submit" name="submit" value="">
+		</form>
+	</div>
+
 	<section class="game">
-		
+		<div class="countrySelect hidden">
+			<ul class="nations">
+				<li class="head">Nations</li>
+				<li class="nation" data-nation="0">Maple</li>
+				<li class="nation" data-nation="1">Maple</li>
+				<li class="nation" data-nation="2">Maple</li>
+				<li class="nation" data-nation="3">Maple</li>
+				<li class="nation" data-nation="4">Maple</li>
+				<li class="nation" data-nation="5">Maple</li>
+				<li class="nation" data-nation="6">Maple</li>
+				<li class="nation" data-nation="7">Maple</li>
+				<li class="nation" data-nation="8">Maple</li>
+				<li class="nation" data-nation="9">Maple</li>
+			</ul>
+		</div>
 	</section>
 </body>
 </html>

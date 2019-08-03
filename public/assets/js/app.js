@@ -3,7 +3,44 @@
 // Disable right click
 document.addEventListener('contextmenu', event => event.preventDefault());
 
-const fullscreen = false;
+class Notification {
+	constructor(title, message) {
+		Notification.closeImmediately();
+		document.body.insertAdjacentHTML('afterbegin',
+			`<div class="notification">
+				<div>
+					<h1>${title}</h1>
+					<h3>${message}</h3>
+					<button onclick="Notification.close();">Close</button>
+				</div>
+			</div>`
+		);
+		setTimeout(() => {
+			const notifications = document.querySelectorAll('.notification');
+			notifications.forEach((notification) => {
+				notification.classList.add('show');
+			});
+		}, 200);
+	}
+
+	static close() {
+		const notifications = document.querySelectorAll('.notification');
+		notifications.forEach((notification) => {
+			notification.classList.remove('show');
+			setTimeout(() => {
+				notification.remove();
+			}, 500);
+		});
+	}
+
+	static closeImmediately() {
+		const notifications = document.querySelectorAll('.notification');
+		notifications.forEach((notification) => {
+			notification.remove();
+		});
+	}
+}
+
 // Full screen
 function toggleFullscreen() {
 	if ((document.fullScreenElement && document.fullScreenElement !== null) || (!document.mozFullScreen && !document.webkitIsFullScreen)) {
@@ -40,19 +77,44 @@ function toggleIndexes(on = true) {
 toggleIndexes(true);
 
 links.forEach( (link) => {
-	link.addEventListener("click", () => {
-		const menuName = link.getAttribute('data-link');
-		if(menuName == '') return;
-		const showMenu = document.querySelector(`[data-menu=${menuName}]`);
-		showMenu.classList.remove('inactive');
-		showMenu.classList.add('active');
-		currentMenu = showMenu;
-		menuLinks = currentMenu.querySelectorAll('[data-link]');
-		link.parentNode.classList.add('inactive');
-		link.parentNode.classList.remove('active');
-		focusedLink = 0;
-	});
+	link.addEventListener("click", linkTheLinks);
 });
+
+function linkTheLinks() {
+	const menuName = this.getAttribute('data-link');
+	if(menuName == '') return;
+	goToWindow(menuName, this);
+}
+
+function goToWindow(menuName, link) {
+	const showMenu = document.querySelector(`[data-menu=${menuName}]`);
+	showMenu.classList.remove('inactive');
+	showMenu.classList.add('active');
+	currentMenu = showMenu;
+	menuLinks = currentMenu.querySelectorAll('[data-link]');
+	link.parentNode.classList.add('inactive');
+	link.parentNode.classList.remove('active');
+	focusedLink = 0;
+}
+
+function lockMultiplayerMenus(status) {
+	const onlineLinks = document.querySelectorAll('.online');
+	onlineLinks.forEach((link) => {
+		if(status) {
+			link.classList.add('locked');
+			link.removeEventListener("click", linkTheLinks);
+		}
+		if(!status) {
+			link.addEventListener("click", linkTheLinks);
+			link.classList.remove('locked');
+		}
+	});
+}
+
+function backToMainMenu() {
+	document.querySelector('.main-menu').classList.remove('hide');
+	document.querySelector('.game').classList.remove('show');
+}
 
 // Navigate with keyboard
 function enterKeyPressed() {
@@ -132,24 +194,88 @@ Number.prototype.mod = function(n) {
 // Socket IO Functions
 
 let socket = io.connect();
+let inLobby = false;
+let username = '';
+
+socket.on('disconnect', () => {
+	new Notification('Whoops!', 'Disconnected from server.');
+	if (currentMenu.dataset.menu != 'main') {
+		goToWindow('main', currentMenu.querySelectorAll('[data-link]')[0]);
+	}
+	backToMainMenu();
+	lockMultiplayerMenus(true);
+	socket.on('connect', () => {
+		new Notification('Back online!', 'Connected to server.');
+		lockMultiplayerMenus(false);
+	});
+});
+
+socket.on('username', (data) => {
+	username = data;
+	document.querySelector('.players').innerHTML = `<li class="item">${username}</li>`;
+});
 
 socket.on('playerCount', (data) => {
 	document.querySelector('[data-socket="playerCount"]').innerHTML = data;
+});
+
+socket.on('currentUsers', (users) => {
+	document.querySelector('.partyCount').innerHTML = users.length;
+	const playerBoard = document.querySelector('.players');
+	html = '';
+	users.forEach((user) => {
+		html += `<li class="item">${user}</li>`;
+	});
+	playerBoard.innerHTML = html;
 });
 
 function createGame() {
 	socket.emit('createGame', '', (data) => {
 		document.querySelector('[data-socket="code"]').innerHTML = data;
 	});
+	inLobby = true;
 }
 
-function joinGame(code) {
-	socket.emit('joinGame', code, (data) => {
+socket.on('gameDisbanded', (msg) => {
+	currentMenu.querySelector('.back').click();
+	clearLobby();
+	backToMainMenu();
+	new Notification('Sorry!', msg);
+});
+
+function joinGame(roomCode, link) {
+	socket.emit('joinGame', roomCode, (data) => {
 		if(data.success) {
-			console.log(data.success.msg);
+			goToWindow('lobby', link);
+			inLobby = true;
 		} else {
-			console.log(data.error.msg);
+			new Notification('Sorry!', data.error.msg);
 		}
+	});
+}
+
+function leaveLobby() {
+	socket.emit('leaveLobby');
+	clearLobby();
+}
+
+function disband(link) {
+	socket.emit('disband', '', (data) => {
+		if(data.success) {
+			goToWindow('multiplayer', link);
+			clearLobby();
+		} else {
+			new Notification('Sorry!', data.error.msg);
+		}
+	});
+}
+
+function clearLobby() {
+	document.querySelector('.players').innerHTML = `<li class="item">${username}</li>`;
+	document.querySelector('.partyCount').innerHTML = 1;
+	inLobby = false;
+	document.querySelectorAll('.timer').forEach( (elem) => {
+		elem.innerHTML = ``;
 	});
 }
 
@@ -172,8 +298,8 @@ function inputDialog() {
 			dialog.classList.add('hidden');
 			form.removeEventListener('submit', inputListener);
 			document.addEventListener('keydown', navigateMenus);
+			textInput.value = '';
 			if(!input) {
-				const reason = new Error('Empty input');
 				reject();
 			} else {
 				resolve(input);
@@ -183,13 +309,14 @@ function inputDialog() {
 }
 
 function enterCode(elem) {
-	inputDialog().then((code) => submitCode(code))
-	.catch((error) => noCode(error));
+	inputDialog()
+		.then((code) => submitCode(code))
+		.catch((error) => noCode(error));
 	function submitCode(code) {
 		elem.innerHTML = `Enter code: ${code}`;
 		const joinGame = elem.parentNode.querySelector('.join-game');
 		joinGame.classList.remove('locked');
-		joinGame.setAttribute('onclick', `joinGame('${code}')`);
+		joinGame.setAttribute('onclick', `joinGame('${code}', this)`);
 	}
 	function noCode(error) {
 		elem.innerHTML = `Enter code:`;
@@ -198,3 +325,39 @@ function enterCode(elem) {
 		joinGame.setAttribute('onclick', ``);
 	}
 };
+
+function startGame() {
+	socket.emit('start game');
+}
+
+socket.on('start game', (callback) => {
+	let seconds = 5;
+	const counter = setInterval(timer, 1000);
+	var beep = new Audio('/audio/beep.mp3');
+	var boop = new Audio('/audio/boop.mp3');
+	function timer() {
+		if(!inLobby) {
+			clearInterval(counter);
+			callback(false);
+			return;
+		}
+		seconds = seconds - 1;
+		if(seconds <= 3 && seconds > 0) {
+			beep.play();
+		}
+		document.querySelectorAll('.timer').forEach( (elem) => {
+			elem.innerHTML = `00:0${seconds}`;
+		});
+		if (seconds <= 0) {
+			clearInterval(counter);
+			boop.play();
+			callback(true);
+			return;
+		}
+	}
+});
+
+socket.on('bootGame', () => {
+	document.querySelector('.main-menu').classList.add('hide');
+	document.querySelector('.game').classList.add('show');
+});

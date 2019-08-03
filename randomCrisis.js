@@ -1,4 +1,3 @@
-
 const turn = 200;
 
 const users = [
@@ -49,7 +48,6 @@ const users = [
 ];
 
 const countries = ['United Mines of Eurasia', 'Maple', 'The Collective', 'The Unbeaten Scourge', 'East African Builder\'s Clan','ConnCo Global','Kimjung Islands', 'Alpinia Sanctuary','People\'s Republic of the Great Lakes','The Agency'];
-
 
 const crises = [
 	{
@@ -118,7 +116,7 @@ const crises = [
 			material: .30
 		}
 	}
-]
+];
 
 const globalEcon = {
 	money: 800,
@@ -128,17 +126,16 @@ const globalEcon = {
 	material: 800
 }
 
+module.exports = {
+	start: (users, globalEcon, turn) => {
+		let randomNum = Math.random();
 
-start(users, globalEcon, turn);
-
-function start(users, globalEcon, turn) {
-	let randomNum = Math.random();
-
-	if (randomNum <= .65) {
-		npcCrisis(globalEcon, turn);
-	}
-	else {
-		playerCrisis(users, globalEcon, turn);
+		if (randomNum <= .65) {
+			npcCrisis(globalEcon, turn);
+		}
+		else {
+			playerCrisis(users, globalEcon, turn);
+		}
 	}
 }
 
