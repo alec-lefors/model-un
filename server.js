@@ -85,8 +85,9 @@ io.on('connection', (client) => {
 				callback({
 					error: {
 						msg: `Lobby is full.`
-					}  
+					}
 				});
+				return;
 			}
 			client.room = {leader: false, code: roomCode};
 			client.join(roomCode);
@@ -102,6 +103,7 @@ io.on('connection', (client) => {
 					msg: `Could not find the room.`
 				}  
 			});
+			return;
 		}
 	});
 
@@ -166,8 +168,15 @@ io.on('connection', (client) => {
 	function startGame(gameCode) {
 		const room = io.sockets.adapter.rooms[gameCode];
 		const players = shuffleArray(room.sockets);
+		let usernames = [];
+		console.log(`Players: ${players}`);
+		// for (let clientId in players) {
+		// 	let clientSocket = io.sockets.connected[clientId];
+		// 	usersnames.push(clientSocket.username);
+		// }
 		console.log(`Started game for room ${gameCode}`);
-		io.to(gameCode).emit('bootGame');
+		
+		io.to(gameCode).emit('bootGame', variables.countries, usernames);
 		for (let clientId in players) {
 			let clientSocket = io.sockets.connected[clientId];
 			clientSocket.emit('chooseCountry');

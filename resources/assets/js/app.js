@@ -157,35 +157,35 @@ function rightArrowPressed() {
 	 console.log('right');
 }
 
-document.addEventListener('keydown', navigateMenus);
-function navigateMenus(evt) {
-	menuLinks = currentMenu.querySelectorAll('[data-link]');
-	evt = evt || window.event;
-	if(document.activeElement == document.querySelector('body')) {
-		menuLinks[focusedLink].focus();
-		return;
-	}
-	switch (evt.keyCode) {
-	case 37:
-		leftArrowPressed();
-		break;
-	case 38:
-		upArrowPressed();
-		break;
-	case 39:
-		rightArrowPressed();
-		break;
-	case 40:
-		downArrowPressed();
-		break;
-	case 13:
-		enterKeyPressed();
-		break;
-	case 27:
-		escapeKeyPressed();
-		break;
-	}
-};
+// document.addEventListener('keydown', navigateMenus);
+// function navigateMenus(evt) {
+// 	menuLinks = currentMenu.querySelectorAll('[data-link]');
+// 	evt = evt || window.event;
+// 	if(document.activeElement == document.querySelector('body')) {
+// 		menuLinks[focusedLink].focus();
+// 		return;
+// 	}
+// 	switch (evt.keyCode) {
+// 	case 37:
+// 		leftArrowPressed();
+// 		break;
+// 	case 38:
+// 		upArrowPressed();
+// 		break;
+// 	case 39:
+// 		rightArrowPressed();
+// 		break;
+// 	case 40:
+// 		downArrowPressed();
+// 		break;
+// 	case 13:
+// 		enterKeyPressed();
+// 		break;
+// 	case 27:
+// 		escapeKeyPressed();
+// 		break;
+// 	}
+// };
 
 Number.prototype.mod = function(n) {
 	return ((this%n)+n)%n;
@@ -204,6 +204,7 @@ socket.on('disconnect', () => {
 	}
 	backToMainMenu();
 	lockMultiplayerMenus(true);
+	clearTimer();
 	socket.on('connect', () => {
 		new Notification('Back online!', 'Connected to server.');
 		lockMultiplayerMenus(false);
@@ -274,14 +275,18 @@ function clearLobby() {
 	document.querySelector('.players').innerHTML = `<li class="item">${username}</li>`;
 	document.querySelector('.partyCount').innerHTML = 1;
 	inLobby = false;
+	clearTimer();
+}
+
+function clearTimer() {
 	document.querySelectorAll('.timer').forEach( (elem) => {
 		elem.innerHTML = ``;
 	});
 }
 
-function inputDialog() {
+async function inputDialog() {
 	return new Promise( (resolve, reject) => {
-		document.removeEventListener('keydown', navigateMenus);
+		// document.removeEventListener('keydown', navigateMenus);
 		toggleIndexes(false);
 		const dialog = document.querySelector('.inputDialog');
 		dialog.classList.remove('hidden');
@@ -297,8 +302,7 @@ function inputDialog() {
 			textInput.value = '';
 			dialog.classList.add('hidden');
 			form.removeEventListener('submit', inputListener);
-			document.addEventListener('keydown', navigateMenus);
-			textInput.value = '';
+			// document.addEventListener('keydown', navigateMenus);
 			if(!input) {
 				reject();
 			} else {
@@ -313,7 +317,7 @@ function enterCode(elem) {
 		.then((code) => submitCode(code))
 		.catch((error) => noCode(error));
 	function submitCode(code) {
-		elem.innerHTML = `Enter code: ${code}`;
+		elem.innerHTML = `Enter code: ${code.toUpperCase()}`;
 		const joinGame = elem.parentNode.querySelector('.join-game');
 		joinGame.classList.remove('locked');
 		joinGame.setAttribute('onclick', `joinGame('${code}', this)`);
@@ -357,7 +361,8 @@ socket.on('start game', (callback) => {
 	}
 });
 
-socket.on('bootGame', () => {
+socket.on('bootGame', (countries, players) => {
 	document.querySelector('.main-menu').classList.add('hide');
 	document.querySelector('.game').classList.add('show');
+
 });

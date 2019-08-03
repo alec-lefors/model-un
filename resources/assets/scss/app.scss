@@ -21,7 +21,7 @@ section {
 }
 
 .main-menu {
-	background: url('http://i.imgur.com/cOuYMSG.png') no-repeat center center fixed;
+	background: url('https://i.pinimg.com/originals/83/81/17/8381171693f7fedc6b6411c39f15f9fb.jpg') no-repeat center center fixed;
 	background-size: cover;
 	transform: translateZ(100px);
 	transition: opacity .5s ease-in-out;
@@ -75,8 +75,8 @@ li {
 		}
 	}
 	&.locked {
-		background-color: rgba(80, 80, 80, .6);
-		color: darkgrey;
+		background-color: rgba(80, 80, 80, .7);
+		color: lightgrey;
 		&:hover {
 			background-color: rgba(150, 150, 150, .6);
 			width: 400px;
