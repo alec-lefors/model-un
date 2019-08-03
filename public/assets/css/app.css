@@ -3,6 +3,10 @@ body {
   padding: 0;
   margin: 0;
   font-family: Helvectia, sans-serif;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .engine {
@@ -22,10 +26,6 @@ section {
   background-size: cover;
   transform: translateZ(100px);
   transition: opacity 0.5s ease-in-out;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
 }
 
 .main-menu.hide {

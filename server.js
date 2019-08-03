@@ -53,7 +53,6 @@ const globalEcon = {
 	material: 40
 }
 
-
 const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
@@ -84,6 +83,8 @@ io.on('connection', (client) => {
 	connections.push(client);
 	updatePlayerCount();
 	console.log('Connected: %s client(s) connected currently.', connections.length);
+	client.username = randName();
+	client.emit('username', client.username);
 
 	client.on('disconnect', () => {
 		connections.splice(connections.indexOf(client), 1);
@@ -110,7 +111,7 @@ io.on('connection', (client) => {
 			const clients = io.sockets.adapter.rooms[roomCode].sockets;
 			for (let clientId in clients) {
 				let clientSocket = io.sockets.connected[clientId];
-				if(!clientSocket.room.leader) clientSocket.emit('gameDisbanded', 'Party leader disbanded the party.');
+				if(!clientSocket.room.leader) clientSocket.emit('gameDisbanded', `${client.username} disbanded the party.`);
 				clientSocket.leave(roomCode);
 				clientSocket.room = {};
 			}
@@ -129,7 +130,7 @@ io.on('connection', (client) => {
 		}
 	});
 
-	client.on('leaveLobby', (data) => {
+	client.on('leaveLobby', () => {
 		leaveLobby(client);
 	});
 
@@ -163,7 +164,6 @@ io.on('connection', (client) => {
 	function leaveLobby(client) {
 		if('room' in client && 'code' in client.room) {
 			const roomCode = client.room.code;
-			console.log(`Leaving ${roomCode}`);
 			client.leave(roomCode);
 			client.room = {};
 			updateUsersIn(roomCode);
@@ -172,8 +172,14 @@ io.on('connection', (client) => {
 
 	function updateUsersIn(roomCode) {
 		const room = io.sockets.adapter.rooms[roomCode];
+		let users = [];
 		if(room) {
-			io.to(roomCode).emit('currentUsers', room.length);
+			const clients = room.sockets;
+			for (let clientId in clients) {
+				let clientSocket = io.sockets.connected[clientId];
+				users.push(clientSocket.username);
+			}
+			io.to(roomCode).emit('currentUsers', users);
 		}
 	}
 
@@ -193,7 +199,7 @@ io.on('connection', (client) => {
 					clientSocket.emit('start game', (isReady) => {
 						console.log(isReady);
 						if(isReady) amountReady++;
-						if(!isReady) io.to(roomCode).emit('gameDisbanded', 'A player quit the game.');
+						if(!isReady) io.to(roomCode).emit('gameDisbanded', `${clientSocket.username} quit the game.`);
 						readyUp(amountReady, lobbyAmount)
 							.then(() => startGame(roomCode))
 							.catch(() => {});
@@ -236,3 +242,37 @@ function makeRoomCode(length = 6) {
 	} while(rooms.indexOf(result) != -1 && ingame.indexOf(result) != -1);
 	return result;
 }
+
+function randName() {
+	const nameList = [
+		'Time','Past','Future','Dev',
+		'Fly','Flying','Soar','Soaring','Power','Falling',
+		'Fall','Jump','Cliff','Mountain','Rend','Red','Blue',
+		'Green','Yellow','Gold','Demon','Demonic','Panda','Cat',
+		'Kitty','Kitten','Zero','Memory','Trooper','XX','Bandit',
+		'Fear','Light','Glow','Tread','Deep','Deeper','Deepest',
+		'Mine','Your','Worst','Enemy','Hostile','Force','Video',
+		'Game','Donkey','Mule','Colt','Cult','Cultist','Magnum',
+		'Gun','Assault','Recon','Trap','Trapper','Redeem','Code',
+		'Script','Writer','Near','Close','Open','Cube','Circle',
+		'Geo','Genome','Germ','Spaz','Shot','Echo','Beta','Alpha',
+		'Gamma','Omega','Seal','Squid','Money','Cash','Lord','King',
+		'Duke','Rest','Fire','Flame','Morrow','Break','Breaker','Numb',
+		'Ice','Cold','Rotten','Sick','Sickly','Janitor','Camel','Rooster',
+		'Sand','Desert','Dessert','Hurdle','Racer','Eraser','Erase','Big',
+		'Small','Short','Tall','Sith','Bounty','Hunter','Cracked','Broken',
+		'Sad','Happy','Joy','Joyful','Crimson','Destiny','Deceit','Lies',
+		'Lie','Honest','Destined','Bloxxer','Hawk','Eagle','Hawker','Walker',
+		'Zombie','Sarge','Capt','Captain','Punch','One','Two','Uno','Slice',
+		'Slash','Melt','Melted','Melting','Fell','Wolf','Hound',
+		'Legacy','Sharp','Dead','Mew','Chuckle','Bubba','Bubble','Sandwich','Smasher','Extreme','Multi','Universe','Ultimate','Death','Ready','Monkey','Elevator','Wrench','Grease','Head','Theme','Grand','Cool','Kid','Boy','Girl','Vortex','Paradox'
+	]; 
+
+	let username = '';
+	username = nameList[Math.floor( Math.random() * nameList.length )];
+	username += nameList[Math.floor( Math.random() * nameList.length )];
+	if ( Math.random() > 0.5 ) {
+		username += nameList[Math.floor( Math.random() * nameList.length )];
+	}
+	return username;
+};

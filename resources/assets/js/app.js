@@ -167,19 +167,24 @@ Number.prototype.mod = function(n) {
 
 let socket = io.connect();
 let inLobby = false;
+let username = '';
+
+socket.on('username', (data) => {
+	username = data;
+	document.querySelector('.players').innerHTML = `<li class="item">${username}</li>`;
+});
 
 socket.on('playerCount', (data) => {
 	document.querySelector('[data-socket="playerCount"]').innerHTML = data;
 });
 
 socket.on('currentUsers', (users) => {
-	document.querySelector('.partyCount').innerHTML = users;
-	users = users - 1;
+	document.querySelector('.partyCount').innerHTML = users.length;
 	const playerBoard = document.querySelector('.players');
-	let html = '<li class="item">You</li>';
-	for(let i = 0; i < users; i++){
-		html += `<li class="item">Player</li>`;
-	}
+	html = '';
+	users.forEach((user) => {
+		html += `<li class="item">${user}</li>`;
+	});
 	playerBoard.innerHTML = html;
 });
 
@@ -210,7 +215,7 @@ function joinGame(roomCode, link) {
 }
 
 function leaveLobby() {
-	socket.emit('leaveLobby' ,'');
+	socket.emit('leaveLobby');
 	clearLobby();
 }
 
@@ -226,7 +231,7 @@ function disband(link) {
 }
 
 function clearLobby() {
-	document.querySelector('.players').innerHTML = '<li class="item">You</li>';
+	document.querySelector('.players').innerHTML = `<li class="item">${username}</li>`;
 	document.querySelector('.partyCount').innerHTML = 1;
 	inLobby = false;
 	document.querySelectorAll('.timer').forEach( (elem) => {
