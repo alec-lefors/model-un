@@ -1,5 +1,5 @@
 
-const turn = 1;
+const turn = 200;
 
 const users = [
 	{
@@ -121,11 +121,11 @@ const crises = [
 ]
 
 const globalEcon = {
-	money: 40,
-	military: 40,
-	humanitarian: 40,
-	intel: 40,
-	material: 40
+	money: 800,
+	military: 800,
+	humanitarian: 800,
+	intel: 800,
+	material: 800
 }
 
 
