@@ -20,7 +20,7 @@ class Notification {
 			notifications.forEach((notification) => {
 				notification.classList.add('show');
 			});
-		}, 500);
+		}, 200);
 	}
 
 	static close() {
@@ -29,7 +29,7 @@ class Notification {
 			notification.classList.remove('show');
 			setTimeout(() => {
 				notification.remove();
-			}, 1000);
+			}, 500);
 		});
 	}
 }

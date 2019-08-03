@@ -20,7 +20,7 @@ class Notification {
 			notifications.forEach((notification) => {
 				notification.classList.add('show');
 			});
-		}, 500);
+		}, 200);
 	}
 
 	static close() {
@@ -29,7 +29,7 @@ class Notification {
 			notification.classList.remove('show');
 			setTimeout(() => {
 				notification.remove();
-			}, 1000);
+			}, 500);
 		});
 	}
 }
@@ -304,8 +304,6 @@ socket.on('start game', (callback) => {
 		});
 		if (seconds <= 0) {
 			clearInterval(counter);
-			document.querySelector('.main-menu').classList.add('hide');
-			document.querySelector('.game').classList.add('show');
 			boop.play();
 			callback(true);
 			return;
@@ -314,5 +312,6 @@ socket.on('start game', (callback) => {
 });
 
 socket.on('bootGame', () => {
-
+	document.querySelector('.main-menu').classList.add('hide');
+	document.querySelector('.game').classList.add('show');
 });

@@ -20,6 +20,7 @@ section {
 .main-menu {
   background: url("http://i.imgur.com/cOuYMSG.png") no-repeat center center fixed;
   background-size: cover;
+  transform: translateZ(100px);
   transition: opacity 0.5s ease-in-out;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -115,10 +116,6 @@ li.thumbnail {
   background-color: rgba(20, 20, 20, 0.4);
 }
 
-.hidden {
-  display: none;
-}
-
 .inactive {
   left: 5%;
   opacity: 0;
@@ -126,6 +123,7 @@ li.thumbnail {
 }
 
 .inputDialog {
+  transition: all 0.3s ease-in-out;
   z-index: 20;
   position: absolute;
   left: 0;
@@ -133,6 +131,10 @@ li.thumbnail {
   width: 100vw;
   height: 100vh;
   background-color: rgba(20, 20, 20, 0.9);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  transform: translateZ(1000px);
+  -webkit-transform: translateZ(1000px);
 }
 
 .inputDialog form {
@@ -161,6 +163,11 @@ li.thumbnail {
   height: 30px;
 }
 
+.hidden {
+  opacity: 0;
+  z-index: -100;
+}
+
 footer {
   position: absolute;
   bottom: 0;
@@ -176,6 +183,10 @@ footer {
   width: 100vw;
   height: 100vh;
   background-color: rgba(20, 20, 20, 0.9);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  transform: translateZ(100px);
+  -webkit-transform: translateZ(100px);
   opacity: 0;
   z-index: 20;
 }
