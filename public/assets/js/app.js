@@ -3,7 +3,37 @@
 // Disable right click
 document.addEventListener('contextmenu', event => event.preventDefault());
 
-const fullscreen = false;
+class Notification {
+	constructor(title, message) {
+		document.body.insertAdjacentHTML('afterbegin',
+			`<div class="notification">
+				<div>
+					<h1>${title}</h1>
+					<h3>${message}</h3>
+					<button onclick="Notification.close();">Close</button>
+				</div>
+			</div>`
+		);
+		console.log('notification');
+		setTimeout(() => {
+			const notifications = document.querySelectorAll('.notification');
+			notifications.forEach((notification) => {
+				notification.classList.add('show');
+			});
+		}, 500);
+	}
+
+	static close() {
+		const notifications = document.querySelectorAll('.notification');
+		notifications.forEach((notification) => {
+			notification.classList.remove('show');
+			setTimeout(() => {
+				notification.remove();
+			}, 1000);
+		});
+	}
+}
+
 // Full screen
 function toggleFullscreen() {
 	if ((document.fullScreenElement && document.fullScreenElement !== null) || (!document.mozFullScreen && !document.webkitIsFullScreen)) {
@@ -165,7 +195,7 @@ socket.on('gameDisbanded', (msg) => {
 	clearLobby();
 	document.querySelector('.main-menu').classList.remove('hide');
 	document.querySelector('.game').classList.remove('show');
-	notification('Sorry!', msg);
+	new Notification('Sorry!', msg);
 });
 
 function joinGame(roomCode, link) {
@@ -174,7 +204,7 @@ function joinGame(roomCode, link) {
 			goToWindow('lobby', link);
 			inLobby = true;
 		} else {
-			console.log(data.error.msg);
+			new Notification('Sorry!', data.error.msg);
 		}
 	});
 }
@@ -190,7 +220,7 @@ function disband(link) {
 			goToWindow('multiplayer', link);
 			clearLobby();
 		} else {
-			console.log(data.error.msg);
+			new Notification('Sorry!', data.error.msg);
 		}
 	});
 }
@@ -200,7 +230,7 @@ function clearLobby() {
 	document.querySelector('.partyCount').innerHTML = 1;
 	inLobby = false;
 	document.querySelectorAll('.timer').forEach( (elem) => {
-		elem.innerHTML = `00:00`;
+		elem.innerHTML = ``;
 	});
 }
 
@@ -269,6 +299,9 @@ socket.on('start game', (callback) => {
 		if(seconds <= 3 && seconds > 0) {
 			beep.play();
 		}
+		document.querySelectorAll('.timer').forEach( (elem) => {
+			elem.innerHTML = `00:0${seconds}`;
+		});
 		if (seconds <= 0) {
 			clearInterval(counter);
 			document.querySelector('.main-menu').classList.add('hide');
@@ -277,9 +310,6 @@ socket.on('start game', (callback) => {
 			callback(true);
 			return;
 		}
-		document.querySelectorAll('.timer').forEach( (elem) => {
-			elem.innerHTML = `00:0${seconds}`;
-		});
 	}
 });
 

@@ -117,7 +117,7 @@ li {
 }
 
 .inputDialog {
-	z-index: 2;
+	z-index: 20;
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -153,6 +153,67 @@ footer {
 	bottom: 0;
 	right: 1em;
 	color: white;
+}
+
+.notification {
+	transition: opacity .3s ease-in-out;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: rgba(20, 20, 20, .9);
+	opacity: 0;
+	z-index: 20;
+	&.show {
+		opacity: 1;
+	}
+	div {
+		transition-property: width, opacity, padding;
+		transition-duration: .2s;
+		transition-timing-function: ease-in-out;
+		box-sizing: border-box;
+		position: relative;
+		padding: 4em 0 4em 0;
+		background-color: rgba(200, 80, 80, .5);
+		width: 80vw;
+		height: 400px;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		opacity: 0;
+		color: white;
+	}
+	&.show div {
+		padding: 4em 10% 4em 10%;
+		width: 100vw;
+		opacity: 1;
+	}
+	button {
+		position: absolute;
+		bottom: 3em;
+		right: 10%;
+		padding: 5px 10px;
+		background-color: rgba(255, 255, 255, .7);
+		border: none;
+		width: 400px;
+		height: 42px;
+		text-align: left;
+		&:before {
+			transition: width .2s ease-in-out;
+			z-index: -1;
+			content: '';
+			position: absolute;
+			height: 42px;
+			width: 5px;
+			background-color: white;
+			display: block;
+			transform: translate(-11px, -14px);
+		}
+		&:hover:before {
+			width: 400px;
+		}
+	}
 }
 
 .game {
