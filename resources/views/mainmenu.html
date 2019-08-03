@@ -15,8 +15,8 @@
 				<p>Players online (<span data-socket="playerCount">1</span>)</p>
 			</li>
 			<li class="head">Main menu</li>
-			<li class="item" data-link="tutorial">Tutorial</li>
-			<li class="item" data-link="multiplayer">Multiplayer</li>
+			<li class="item online" data-link="tutorial">Tutorial</li>
+			<li class="item online" data-link="multiplayer">Multiplayer</li>
 			<li class="item" data-link="settings">Settings</li>
 			<li class="item" data-link="" onclick="window.close();">Quit</li>
 		</ul>
@@ -24,15 +24,15 @@
 		<ul class="menu inactive" data-menu="tutorial">
 			<li class="thumbnail" style="background-image: url('');"></li>
 			<li class="head">Tutorial</li>
-			<li class="item" data-link="">Start game</li>
+			<li class="item online" data-link="">Start game</li>
 			<li class="back item" data-link="main">Go Back</li>
 		</ul>
 
 		<ul class="menu inactive" data-menu="multiplayer">
 			<li class="thumbnail" style="background-image: url('');"></li>
 			<li class="head">Multiplayer</li>
-			<li class="item" data-link="start-game" onclick="createGame();">Create game</li>
-			<li class="item" data-link="join-game">Join game</li>
+			<li class="item online" data-link="start-game" onclick="createGame();">Create game</li>
+			<li class="item online" data-link="join-game">Join game</li>
 			<li class="back item" data-link="main">Go Back</li>
 		</ul>
 
@@ -42,7 +42,7 @@
 				<p>Friends can join your game with this code.</p>
 			</li>
 			<li class="head">Create Game <span class="timer"></span></li>
-			<li class="item" data-link="" onclick="startGame();">Start game</li>
+			<li class="item online" data-link="" onclick="startGame();">Start game</li>
 			<li class="back item" data-link="" onclick="disband(this);">Disband</li>
 		</ul>
 
@@ -56,7 +56,7 @@
 			<li class="thumbnail" style="background-image: url('');"></li>
 			<li class="head">Join Game</li>
 			<li class="item" data-link="" onclick="enterCode(this)">Enter code: </li>
-			<li class="item join-game locked">Join game</li>
+			<li class="item join-game locked online">Join game</li>
 			<li class="back item" data-link="multiplayer">Go Back</li>
 		</ul>
 

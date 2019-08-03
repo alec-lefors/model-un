@@ -67,7 +67,13 @@ const crises = [
 	}
 ];
 
-const countries = ['United Mines of Eurasia', 'Maple', 'The Collective', 'The Unbeaten Scourge', 'East African Builder\'s Clan','ConnCo Global','Kimjung Islands', 'Alpinia Sanctuary','People\'s Republic of the Great Lakes','The Agency'];
+const globalEcon = {
+	money: 40,
+	military: 40,
+	humanitarian: 40,
+	intel: 40,
+	material: 40
+}
 
 module.exports = {
 	start: (users, globalEcon, turn) => {

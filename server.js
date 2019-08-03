@@ -1,65 +1,9 @@
-const users = [
-	{
-		name: 'Alec',
-		country: 2,
-		economy: {
-			money: 10,
-			military: 10,
-			humanitarian: 10,
-			intel: 10,
-			material: 10
-		}
-	},
-	{
-		name: 'Cameron',
-		country: 6,
-		economy: {
-			money: 10,
-			military: 10,
-			humanitarian: 10,
-			intel: 10,
-			material: 10
-		}
-	},
-	{
-		name: 'Logan',
-		country: 7,
-		economy: {
-			money: 10,
-			military: 10,
-			humanitarian: 10,
-			intel: 10,
-			material: 10
-		}
-	},
-	{
-		name: 'Joe',
-		country: 1,
-		economy: {
-			money: 10,
-			military: 10,
-			humanitarian: 10,
-			intel: 10,
-			material: 10
-		}
-	}
-];
-
-const globalEcon = {
-	money: 40,
-	military: 40,
-	humanitarian: 40,
-	intel: 40,
-	material: 40
-}
-
 const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io').listen(server);
 const turn = require('./randomCrisis.js');
-
-turn.start(users, globalEcon, 1);
+const variables = require('./variables.js');
 
 let connections = [];
 let rooms = [];
@@ -106,8 +50,8 @@ io.on('connection', (client) => {
 	});
 
 	client.on('disband', (data, callback) => {
-		const roomCode = client.room.code;
-		if(client.room.leader) {
+		if(client.room && client.room.leader) {
+			const roomCode = client.room.code;
 			const clients = io.sockets.adapter.rooms[roomCode].sockets;
 			for (let clientId in clients) {
 				let clientSocket = io.sockets.connected[clientId];
@@ -185,15 +129,15 @@ io.on('connection', (client) => {
 
 	// GAME TIME
 	client.on('start game', () => {
-		const roomCode = client.room.code;
-		if(client.room.leader) {
+		if(client.room && client.room.leader) {
+			const roomCode = client.room.code;
 			const room = io.sockets.adapter.rooms[roomCode];
 			if(room && room.length > 1) {
 				rooms.splice(rooms.indexOf(roomCode), 1);
 				ingame.push(roomCode);
 				let amountReady = 0;
 				const clients = room.sockets;
-				const lobbyAmount = room.length;
+				const lobbyAmount = room.length; 
 				for (let clientId in clients) {
 					let clientSocket = io.sockets.connected[clientId];
 					clientSocket.emit('start game', (isReady) => {
@@ -221,7 +165,7 @@ io.on('connection', (client) => {
 
 	function startGame(gameCode) {
 		const room = io.sockets.adapter.rooms[gameCode];
-		const players = room.sockets;
+		const players = shuffleArray(room.sockets);
 		console.log(`Started game for room ${gameCode}`);
 		io.to(gameCode).emit('bootGame');
 		for (let clientId in players) {
@@ -244,31 +188,8 @@ function makeRoomCode(length = 6) {
 }
 
 function randName() {
-	const nameList = [
-		'Time','Past','Future','Dev',
-		'Fly','Flying','Soar','Soaring','Power','Falling',
-		'Fall','Jump','Cliff','Mountain','Rend','Red','Blue',
-		'Green','Yellow','Gold','Demon','Demonic','Panda','Cat',
-		'Kitty','Kitten','Zero','Memory','Trooper','XX','Bandit',
-		'Fear','Light','Glow','Tread','Deep','Deeper','Deepest',
-		'Mine','Your','Worst','Enemy','Hostile','Force','Video',
-		'Game','Donkey','Mule','Colt','Cult','Cultist','Magnum',
-		'Gun','Assault','Recon','Trap','Trapper','Redeem','Code',
-		'Script','Writer','Near','Close','Open','Cube','Circle',
-		'Geo','Genome','Germ','Spaz','Shot','Echo','Beta','Alpha',
-		'Gamma','Omega','Seal','Squid','Money','Cash','Lord','King',
-		'Duke','Rest','Fire','Flame','Morrow','Break','Breaker','Numb',
-		'Ice','Cold','Rotten','Sick','Sickly','Janitor','Camel','Rooster',
-		'Sand','Desert','Dessert','Hurdle','Racer','Eraser','Erase','Big',
-		'Small','Short','Tall','Sith','Bounty','Hunter','Cracked','Broken',
-		'Sad','Happy','Joy','Joyful','Crimson','Destiny','Deceit','Lies',
-		'Lie','Honest','Destined','Bloxxer','Hawk','Eagle','Hawker','Walker',
-		'Zombie','Sarge','Capt','Captain','Punch','One','Two','Uno','Slice',
-		'Slash','Melt','Melted','Melting','Fell','Wolf','Hound',
-		'Legacy','Sharp','Dead','Mew','Chuckle','Bubba','Bubble','Sandwich','Smasher','Extreme','Multi','Universe','Ultimate','Death','Ready','Monkey','Elevator','Wrench','Grease','Head','Theme','Grand','Cool','Kid','Boy','Girl','Vortex','Paradox'
-	]; 
-
 	let username = '';
+	const nameList = variables.nameList;
 	username = nameList[Math.floor( Math.random() * nameList.length )];
 	username += nameList[Math.floor( Math.random() * nameList.length )];
 	if ( Math.random() > 0.5 ) {
@@ -276,3 +197,12 @@ function randName() {
 	}
 	return username;
 };
+
+function shuffleArray(oldArray) {
+	let array = oldArray;
+	for (let i = array.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[array[i], array[j]] = [array[j], array[i]];
+	}
+	return array;
+}

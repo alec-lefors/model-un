@@ -5,6 +5,7 @@ document.addEventListener('contextmenu', event => event.preventDefault());
 
 class Notification {
 	constructor(title, message) {
+		Notification.closeImmediately();
 		document.body.insertAdjacentHTML('afterbegin',
 			`<div class="notification">
 				<div>
@@ -14,7 +15,6 @@ class Notification {
 				</div>
 			</div>`
 		);
-		console.log('notification');
 		setTimeout(() => {
 			const notifications = document.querySelectorAll('.notification');
 			notifications.forEach((notification) => {
@@ -30,6 +30,13 @@ class Notification {
 			setTimeout(() => {
 				notification.remove();
 			}, 500);
+		});
+	}
+
+	static closeImmediately() {
+		const notifications = document.querySelectorAll('.notification');
+		notifications.forEach((notification) => {
+			notification.remove();
 		});
 	}
 }
@@ -70,12 +77,14 @@ function toggleIndexes(on = true) {
 toggleIndexes(true);
 
 links.forEach( (link) => {
-	link.addEventListener("click", () => {
-		const menuName = link.getAttribute('data-link');
-		if(menuName == '') return;
-		goToWindow(menuName, link);
-	});
+	link.addEventListener("click", linkTheLinks);
 });
+
+function linkTheLinks() {
+	const menuName = this.getAttribute('data-link');
+	if(menuName == '') return;
+	goToWindow(menuName, this);
+}
 
 function goToWindow(menuName, link) {
 	const showMenu = document.querySelector(`[data-menu=${menuName}]`);
@@ -86,6 +95,25 @@ function goToWindow(menuName, link) {
 	link.parentNode.classList.add('inactive');
 	link.parentNode.classList.remove('active');
 	focusedLink = 0;
+}
+
+function lockMultiplayerMenus(status) {
+	const onlineLinks = document.querySelectorAll('.online');
+	onlineLinks.forEach((link) => {
+		if(status) {
+			link.classList.add('locked');
+			link.removeEventListener("click", linkTheLinks);
+		}
+		if(!status) {
+			link.addEventListener("click", linkTheLinks);
+			link.classList.remove('locked');
+		}
+	});
+}
+
+function backToMainMenu() {
+	document.querySelector('.main-menu').classList.remove('hide');
+	document.querySelector('.game').classList.remove('show');
 }
 
 // Navigate with keyboard
@@ -169,6 +197,19 @@ let socket = io.connect();
 let inLobby = false;
 let username = '';
 
+socket.on('disconnect', () => {
+	new Notification('Whoops!', 'Disconnected from server.');
+	if (currentMenu.dataset.menu != 'main') {
+		goToWindow('main', currentMenu.querySelectorAll('[data-link]')[0]);
+	}
+	backToMainMenu();
+	lockMultiplayerMenus(true);
+	socket.on('connect', () => {
+		new Notification('Back online!', 'Connected to server.');
+		lockMultiplayerMenus(false);
+	});
+});
+
 socket.on('username', (data) => {
 	username = data;
 	document.querySelector('.players').innerHTML = `<li class="item">${username}</li>`;
@@ -198,8 +239,7 @@ function createGame() {
 socket.on('gameDisbanded', (msg) => {
 	currentMenu.querySelector('.back').click();
 	clearLobby();
-	document.querySelector('.main-menu').classList.remove('hide');
-	document.querySelector('.game').classList.remove('show');
+	backToMainMenu();
 	new Notification('Sorry!', msg);
 });
 
@@ -258,6 +298,7 @@ function inputDialog() {
 			dialog.classList.add('hidden');
 			form.removeEventListener('submit', inputListener);
 			document.addEventListener('keydown', navigateMenus);
+			textInput.value = '';
 			if(!input) {
 				reject();
 			} else {
