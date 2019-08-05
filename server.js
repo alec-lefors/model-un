@@ -13,8 +13,11 @@ server.listen(process.env.PORT || 8090);
 console.log('Running server...');
 
 app.use('/css', express.static(__dirname + '/public/assets/css'));
+app.use('/sw.js', express.static(__dirname + '/app/sw.js'));
 app.use('/audio', express.static(__dirname + '/public/assets/audio'));
+app.use('/images', express.static(__dirname + '/public/assets/images'));
 app.use('/js', express.static(__dirname + '/public/assets/js'));
+app.use('/manifest.json', express.static(__dirname + '/public/manifest.json'));
 app.get('/', (req, res) => {
 	res.sendFile(__dirname + '/resources/views/index.html');
 });
@@ -28,7 +31,16 @@ io.on('connection', (client) => {
 	updatePlayerCount();
 	console.log('Connected: %s client(s) connected currently.', connections.length);
 	client.username = randName();
-	client.emit('username', client.username);
+	client.emit('username', {username: client.username, id: client.id});
+
+	// DEV CODE ONLY
+
+	client.join('TEST');
+	if (connections.length >= 2) {
+		startGame('TEST');
+	}
+
+	// REMOVE AFTER DEVING
 
 	client.on('disconnect', () => {
 		connections.splice(connections.indexOf(client), 1);
@@ -143,7 +155,6 @@ io.on('connection', (client) => {
 				for (let clientId in clients) {
 					let clientSocket = io.sockets.connected[clientId];
 					clientSocket.emit('start game', (isReady) => {
-						console.log(isReady);
 						if(isReady) amountReady++;
 						if(!isReady) io.to(roomCode).emit('gameDisbanded', `${clientSocket.username} quit the game.`);
 						readyUp(amountReady, lobbyAmount)
@@ -167,20 +178,25 @@ io.on('connection', (client) => {
 
 	function startGame(gameCode) {
 		const room = io.sockets.adapter.rooms[gameCode];
-		const players = shuffleArray(room.sockets);
-		let usernames = [];
-		console.log(`Players: ${players}`);
-		// for (let clientId in players) {
-		// 	let clientSocket = io.sockets.connected[clientId];
-		// 	usersnames.push(clientSocket.username);
-		// }
+		const clients = room.sockets;
+		let users = [];
 		console.log(`Started game for room ${gameCode}`);
-		
-		io.to(gameCode).emit('bootGame', variables.countries, usernames);
-		for (let clientId in players) {
+
+		for (let clientId in clients) {
 			let clientSocket = io.sockets.connected[clientId];
-			clientSocket.emit('chooseCountry');
+			let user = {...variables.user};
+			user.name = clientSocket.username;
+			user.id = clientId;
+			users.push(user);
+			console.log(user);
 		}
+		// Randomize users
+		shuffleArray(users);
+		io.to(gameCode).emit('chooseCountry', variables.countries, users);
+		// for (let clientId in clients) {
+		// 	let clientSocket = io.sockets.connected[clientId];
+		// 	clientSocket.emit('chooseCountry');
+		// }
 	}
 });
 
@@ -207,11 +223,9 @@ function randName() {
 	return username;
 };
 
-function shuffleArray(oldArray) {
-	let array = oldArray;
+function shuffleArray(array) {
 	for (let i = array.length - 1; i > 0; i--) {
 		const j = Math.floor(Math.random() * (i + 1));
 		[array[i], array[j]] = [array[j], array[i]];
 	}
-	return array;
 }

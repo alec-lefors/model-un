@@ -2,6 +2,7 @@ const countries = [
 	{
 		id: 0,
 		name: 'United Mines of Eurasia',
+		description: '',
 		gains: {
 			money: 12,
 			military: 10,
@@ -13,6 +14,7 @@ const countries = [
 	{
 		id: 1,
 		name: 'Maple',
+		description: '',
 		gains: {
 			money: 12,
 			military: 10,
@@ -24,6 +26,7 @@ const countries = [
 	{
 		id: 2,
 		name: 'The Collective',
+		description: 'After the Sentient Wars, the world\'s first artificial intelligence, Orellia, brought her machine brothers and sisters to the Himalayas to be free of persecution.',
 		gains: {
 			money: 10,
 			military: 12,
@@ -35,6 +38,7 @@ const countries = [
 	{
 		id: 3,
 		name: 'The Unbeaten Scourge',
+		description: 'A nation of war criminals located on the Australian continent were shunned by the rest of the world for being outcasts, now the US sits at the world table with the military might of 1,000 nations.',
 		gains: {
 			money: 12,
 			military: 12,
@@ -46,6 +50,7 @@ const countries = [
 	{
 		id: 4,
 		name: 'East African Builder\'s Clan',
+		description: 'A small country in East Africa, the Builder\'s Clan is a peaceful, material rich nation-state.',
 		gains: {
 			money: 10,
 			military: 10,
@@ -57,6 +62,7 @@ const countries = [
 	{
 		id: 5,
 		name: 'ConnCo Global',
+		description: 'The largest private entity known to man, Conn Co shareholder\'s threatened to crash several economies if they didn\'t receive large plots of land for oil drilling.',
 		gains: {
 			money: 14,
 			military: 10,
@@ -68,6 +74,7 @@ const countries = [
 	{
 		id: 6,
 		name: 'Kimjung Islands',
+		description: 'A cluster of islands in the pacific ruled by an authoritative leader. Their navy is not to be messed with.',
 		gains: {
 			money: 10,
 			military: 14,
@@ -79,6 +86,7 @@ const countries = [
 	{
 		id: 7,
 		name: 'Alpinia Sanctuary',
+		description: 'Home of millions of refugees from the Scourge, this pacifist nation swore to never militarize their population for any reason.',
 		gains: {
 			money: 10,
 			military: 8,
@@ -90,6 +98,7 @@ const countries = [
 	{
 		id: 8,
 		name: 'People\'s Republic of the Great Lakes',
+		description: 'Once a swath of factories around the Great Lakes under corporate control, is now a thriving democracy after workers unionized and <i>forcefully</i> took the means of production from Conn Co Global.',
 		gains: {
 			money: 8,
 			military: 10,
@@ -101,6 +110,7 @@ const countries = [
 	{
 		id: 9,
 		name: 'The Agency',
+		description: 'No one knows who they are. But The Agency watches <i>everyone</i>.',
 		gains: {
 			money: 10,
 			military: 10,
@@ -111,10 +121,10 @@ const countries = [
 	}
 ];
 
-const users = [
-	{
-		name: 'Alec',
-		country: 2,
+const user = {
+		id: null,
+		name: 'Username',
+		country: null,
 		economy: {
 			money: 10,
 			military: 10,
@@ -122,41 +132,7 @@ const users = [
 			intel: 10,
 			material: 10
 		}
-	},
-	{
-		name: 'Cameron',
-		country: 6,
-		economy: {
-			money: 10,
-			military: 10,
-			humanitarian: 10,
-			intel: 10,
-			material: 10
-		}
-	},
-	{
-		name: 'Logan',
-		country: 7,
-		economy: {
-			money: 10,
-			military: 10,
-			humanitarian: 10,
-			intel: 10,
-			material: 10
-		}
-	},
-	{
-		name: 'Joe',
-		country: 1,
-		economy: {
-			money: 10,
-			military: 10,
-			humanitarian: 10,
-			intel: 10,
-			material: 10
-		}
-	}
-];
+	};
 
 const nameList = [
 	'Time','Past','Future','Dev',
@@ -184,6 +160,6 @@ const nameList = [
 
 module.exports = {
 	countries: countries,
-	users: users,
+	user: user,
 	nameList: nameList
 }

@@ -191,11 +191,46 @@ Number.prototype.mod = function(n) {
 	return ((this%n)+n)%n;
 }
 
+async function inputDialog() {
+	return new Promise( (resolve, reject) => {
+		// document.removeEventListener('keydown', navigateMenus);
+		toggleIndexes(false);
+		const dialog = document.querySelector('.inputDialog');
+		dialog.classList.remove('hidden');
+		const textInput = dialog.querySelector('input[type="text"]');
+		textInput.tabIndex = 1;
+		textInput.focus();
+		const form = dialog.querySelector('form');
+		let input = '';
+		form.addEventListener('submit', inputListener);
+		function inputListener(e) {
+			e.preventDefault();
+			input = textInput.value;
+			textInput.value = '';
+			dialog.classList.add('hidden');
+			form.removeEventListener('submit', inputListener);
+			// document.addEventListener('keydown', navigateMenus);
+			if(!input) {
+				reject();
+			} else {
+				resolve(input);
+			}
+		}
+	});
+}
+
 // Socket IO Functions
 
-let socket = io.connect();
 let inLobby = false;
 let username = '';
+let id = '';
+
+if(typeof io === 'undefined') {
+	new Notification('Whoops!', 'You are playing offline. Please restore an internet connection.');
+	backToMainMenu();
+	lockMultiplayerMenus(true);
+}
+let socket = io.connect();
 
 socket.on('disconnect', () => {
 	new Notification('Whoops!', 'Disconnected from server.');
@@ -212,7 +247,8 @@ socket.on('disconnect', () => {
 });
 
 socket.on('username', (data) => {
-	username = data;
+	username = data.username;
+	id = data.id;
 	document.querySelector('.players').innerHTML = `<li class="item">${username}</li>`;
 });
 
@@ -284,34 +320,6 @@ function clearTimer() {
 	});
 }
 
-async function inputDialog() {
-	return new Promise( (resolve, reject) => {
-		// document.removeEventListener('keydown', navigateMenus);
-		toggleIndexes(false);
-		const dialog = document.querySelector('.inputDialog');
-		dialog.classList.remove('hidden');
-		const textInput = dialog.querySelector('input[type="text"]');
-		textInput.tabIndex = 1;
-		textInput.focus();
-		const form = dialog.querySelector('form');
-		let input = '';
-		form.addEventListener('submit', inputListener);
-		function inputListener(e) {
-			e.preventDefault();
-			input = textInput.value;
-			textInput.value = '';
-			dialog.classList.add('hidden');
-			form.removeEventListener('submit', inputListener);
-			// document.addEventListener('keydown', navigateMenus);
-			if(!input) {
-				reject();
-			} else {
-				resolve(input);
-			}
-		}
-	});
-}
-
 function enterCode(elem) {
 	inputDialog()
 		.then((code) => submitCode(code))
@@ -361,8 +369,77 @@ socket.on('start game', (callback) => {
 	}
 });
 
-socket.on('bootGame', (countries, players) => {
+socket.on('chooseCountry', (countries, players) => {
 	document.querySelector('.main-menu').classList.add('hide');
-	document.querySelector('.game').classList.add('show');
+	const gameScreen = document.querySelector('.game');
+	gameScreen.classList.add('show');
+	const countrySelect = gameScreen.querySelector('.countrySelect');
+	const nationScreen = gameScreen.querySelector('.nations');
+	const playerScreen = countrySelect.querySelector('.players');
+	playerScreen.innerHTML = '';
+	console.log(players);
+	players.forEach((player) => {
+		if (player.id == id) {
+			playerScreen.insertAdjacentHTML('afterbegin',
+				`<li class="me">
+					<h2>${player.name}</h2>
+					<div class="countries"></div>
+				</li>`
+			);
+		} else {
+			playerScreen.insertAdjacentHTML('afterbegin',
+				`<li class="otherUser">${player.name}</li>`
+			);
+		}
+	});
+	const nationPicker = playerScreen.querySelector('.countries');
+	nationPicker.innerHTML = '';
+	nationScreen.innerHTML = `
+		<ul class="nation active">
+			<li class="nation-name">Nation Select</li>
+			<li class="nation-desc">Choose a nation to lead. Every nation has unique stats for your perferred playstyle.</li>
+		</ul>
+	`;
+	countries.forEach((country) => {
+		nationPicker.insertAdjacentHTML("beforeend",
+			`<div data-nationid="${country.id}">${country.name}</div>`
+		);
+		nationScreen.insertAdjacentHTML("beforeend", 
+			`<ul class="nation inactive" data-nation="${country.id}">
+				<li class="thumbnail"></li>
+				<li class="nation-name">${country.name}</li>
+				<li class="nation-desc">${country.description}</li>
+				<li class="nation-stats">
+					<div>Money: +${country.gains.money}</div>
+					<div>Military: +${country.gains.military}</div>
+					<div>Humanitarian: +${country.gains.humanitarian}</div>
+					<div>Inteligence: +${country.gains.intel}</div>
+					<div>Materials: +${country.gains.material}</div>
+				</li>
+				<li class="nation-confirm">Confirm</li>
+			</ul>`
+		);
+	});
+
+	const nationLinks = nationPicker.querySelectorAll('[data-nationid]');
+
+	nationLinks.forEach( (link) => {
+		link.addEventListener("click", (event) => {
+			const nationId = event.target.dataset.nationid;
+			if(nationId == '') return;
+			goToNation(nationId);
+		});
+	});
+
+	function goToNation(nationId) {
+		const nationMenus = nationScreen.querySelectorAll('.nation');
+		nationMenus.forEach((nationMenu) => {
+			nationMenu.classList.add('inactive');
+			nationMenu.classList.remove('active');
+		});
+		const currentNationMenu = document.querySelector(`[data-nation='${nationId}']`);
+		currentNationMenu.classList.remove('inactive');
+		currentNationMenu.classList.add('active');
+	}
 
 });

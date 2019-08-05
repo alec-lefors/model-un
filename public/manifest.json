@@ -1,0 +1,16 @@
+{
+  "name": "No Name Game",
+  "short_name": "Game",
+  "icons": [
+    {
+      "src": "/images/icon512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/game",
+  "background_color": "#c85050",
+  "theme_color": "#c85050",
+  "display": "fullscreen",
+  "orientation": "landscape"
+}
