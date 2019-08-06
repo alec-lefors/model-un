@@ -180,9 +180,10 @@ io.on('connection', (client) => {
 		const room = io.sockets.adapter.rooms[gameCode];
 		const clients = room.sockets;
 		let users = [];
+		let countriesLeft = [variables.countries];  
 		console.log(`Started game for room ${gameCode}`);
 
-		for (let clientId in clients) {
+		for (const clientId in clients) {
 			let clientSocket = io.sockets.connected[clientId];
 			let user = {...variables.user};
 			user.name = clientSocket.username;
@@ -193,6 +194,19 @@ io.on('connection', (client) => {
 		// Randomize users
 		shuffleArray(users);
 		io.to(gameCode).emit('chooseCountry', variables.countries, users);
+
+		// async function getUserSelectedCountry() {
+		// 	for (const user of users) {
+		// 		let userSocket = io.sockets.connected[user.id];
+		// 		await userSocket.emit('yourTurn', (countryId) => {
+		// 			const choosenCountry = countriesLeft.map(item => item.id).indexOf(countryId);
+		// 		});
+		// 		console.log(choosenCountry);
+		// 	}
+		// }
+
+		
+
 		// for (let clientId in clients) {
 		// 	let clientSocket = io.sockets.connected[clientId];
 		// 	clientSocket.emit('chooseCountry');

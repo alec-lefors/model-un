@@ -4,7 +4,7 @@ self.addEventListener('install', function(e) {
 			return cache.addAll([
 				'/game',
 				'/css/app.css',
-				'/js/app.js',
+				// '/js/app.js',
 				'/audio/beep.mp3',
 				'/audio/boop.mp3',
 				'/manifest.json',

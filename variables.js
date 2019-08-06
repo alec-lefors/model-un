@@ -5,7 +5,7 @@ const countries = [
 		description: '',
 		gains: {
 			money: 12,
-			military: 10,
+			military: 8,
 			humanitarian: 10,
 			intel: 10,
 			material: 12
@@ -20,7 +20,7 @@ const countries = [
 			military: 10,
 			humanitarian: 12,
 			intel: 10,
-			material: 10
+			material: 8
 		}
 	},
 	{
@@ -28,9 +28,9 @@ const countries = [
 		name: 'The Collective',
 		description: 'After the Sentient Wars, the world\'s first artificial intelligence, Orellia, brought her machine brothers and sisters to the Himalayas to be free of persecution.',
 		gains: {
-			money: 10,
-			military: 12,
-			humanitarian: 10,
+			money: 8,
+			military: 10,
+			humanitarian: 12,
 			intel: 10,
 			material: 12
 		}
@@ -40,9 +40,9 @@ const countries = [
 		name: 'The Unbeaten Scourge',
 		description: 'A nation of war criminals located on the Australian continent were shunned by the rest of the world for being outcasts, now the US sits at the world table with the military might of 1,000 nations.',
 		gains: {
-			money: 12,
-			military: 12,
-			humanitarian: 10,
+			money: 10,
+			military: 14,
+			humanitarian: 8,
 			intel: 10,
 			material: 10
 		}
@@ -53,10 +53,10 @@ const countries = [
 		description: 'A small country in East Africa, the Builder\'s Clan is a peaceful, material rich nation-state.',
 		gains: {
 			money: 10,
-			military: 10,
-			humanitarian: 12,
+			military: 8,
+			humanitarian: 10,
 			intel: 10,
-			material: 12
+			material: 14
 		}
 	},
 	{
@@ -76,11 +76,11 @@ const countries = [
 		name: 'Kimjung Islands',
 		description: 'A cluster of islands in the pacific ruled by an authoritative leader. Their navy is not to be messed with.',
 		gains: {
-			money: 10,
-			military: 14,
+			money: 8,
+			military: 12,
 			humanitarian: 10,
 			intel: 10,
-			material: 8
+			material: 12
 		}
 	},
 	{
@@ -155,7 +155,10 @@ const nameList = [
 	'Lie','Honest','Destined','Bloxxer','Hawk','Eagle','Hawker','Walker',
 	'Zombie','Sarge','Capt','Captain','Punch','One','Two','Uno','Slice',
 	'Slash','Melt','Melted','Melting','Fell','Wolf','Hound',
-	'Legacy','Sharp','Dead','Mew','Chuckle','Bubba','Bubble','Sandwich','Smasher','Extreme','Multi','Universe','Ultimate','Death','Ready','Monkey','Elevator','Wrench','Grease','Head','Theme','Grand','Cool','Kid','Boy','Girl','Vortex','Paradox'
+	'Legacy','Sharp','Dead','Mew','Chuckle','Bubba','Bubble','Sandwich',
+	'Smasher','Extreme','Multi','Universe','Ultimate','Death','Ready',
+	'Monkey','Elevator','Wrench','Grease','Head','Theme','Grand','Cool',
+	'Kid','Boy','Girl','Vortex','Paradox'
 ];
 
 module.exports = {

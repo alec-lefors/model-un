@@ -62,8 +62,9 @@ function toggleFullscreen() {
 	}
 }
 
+const mainmenu = document.querySelector('.main-menu');
 const links = document.querySelectorAll('[data-link]');
-let currentMenu = document.querySelector('.active');
+let currentMenu = mainmenu.querySelector('.active');
 let focusedLink = 0;
 let menuLinks = currentMenu.querySelectorAll('[data-link]');
 
@@ -410,11 +411,11 @@ socket.on('chooseCountry', (countries, players) => {
 				<li class="nation-name">${country.name}</li>
 				<li class="nation-desc">${country.description}</li>
 				<li class="nation-stats">
-					<div>Money: +${country.gains.money}</div>
-					<div>Military: +${country.gains.military}</div>
-					<div>Humanitarian: +${country.gains.humanitarian}</div>
-					<div>Inteligence: +${country.gains.intel}</div>
-					<div>Materials: +${country.gains.material}</div>
+					<div><i class="fas fa-tree"></i>: +${country.gains.money}</div>
+					<div><i class="fas fa-tree"></i>: +${country.gains.military}</div>
+					<div><i class="fas fa-tree"></i>: +${country.gains.humanitarian}</div>
+					<div><i class="fas fa-tree"></i>: +${country.gains.intel}</div>
+					<div><i class="fas fa-tree"></i>: +${country.gains.material}</div>
 				</li>
 				<li class="nation-confirm">Confirm</li>
 			</ul>`
@@ -442,4 +443,8 @@ socket.on('chooseCountry', (countries, players) => {
 		currentNationMenu.classList.add('active');
 	}
 
+});
+
+socket.on('chooseCountry', (callback) => {
+	callback(1);
 });
